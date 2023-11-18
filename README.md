@@ -26,4 +26,6 @@ Este projeto tem como objetivo implementar um sistema de visualização de estat
 
 - Confiabilidade
 
+## Arquitetura
+
 

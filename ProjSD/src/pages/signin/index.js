@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import styles from "./styles";
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-export default function SignIn() {
+export default function SignIn({ navigation }) {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,25 +28,38 @@ export default function SignIn() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Sign In</Text>
-      <TextInput
+
+      <TextInput 
+        style={styles.input}
         placeholder="Username"
         value={userName}
         onChangeText={setUserName}
       />
-      <TextInput placeholder="Email" value={email} onChangeText={setEmail} />
-      <TextInput
-        placeholder="Password"
+      
+      <TextInput 
+        style={styles.input}
+        placeholder="Email" 
+        value={email} 
+        onChangeText={setEmail} 
+      />
+      
+      <TextInput 
+        style={styles.input}
+        placeholder="Senha"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
-      <TouchableOpacity onPress={handleSignIn}>
+      
+      <TouchableOpacity 
+        style={styles.button}
+        onPress={handleSignIn}>
         <Text>Entrar</Text>
       </TouchableOpacity>
 
+      <Text>Ainda não tem uma conta? </Text>
       <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-        <Text>Ainda não tem uma conta? Cadastre-se</Text>
+        <Text style={{ color: 'blue' }}>Cadastre-se</Text>
       </TouchableOpacity>
     </View>
   );
