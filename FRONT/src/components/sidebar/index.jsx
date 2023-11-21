@@ -4,12 +4,11 @@ import { useNavigate } from "react-router-dom";
 
 import { Icon } from "@chakra-ui/react";
 import { BiLogOut } from "react-icons/bi";
-import { MdGroups } from "react-icons/md";
+import { MdGroups, MdOutgoingMail, MdMarkEmailUnread } from "react-icons/md";
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import { RiArrowDropDownLine, RiArrowDropUpLine } from "react-icons/ri";
-import { MdOutgoingMail } from "react-icons/md";
 import { IoPersonSharp } from "react-icons/io5";
-import { IoIosSettings } from "react-icons/io";
+import { IoIosSettings, IoMdNotifications } from "react-icons/io";
 
 import CreateEmailGroup from "../../modals/createEmailGroup";
 import CreateEmail from "../../modals/createEmail";
@@ -80,6 +79,18 @@ export default function Sidebar(props) {
     navigate("/profile");
   };
 
+  const handleNotificationsClick = () => {
+    navigate("/notifications");
+  }
+
+  const handleReceivedEmailsClick = () => {
+    navigate("/received-emails");
+  }
+
+  const handleSentEmailsClick = () => {
+    navigate("/sent-emails");
+  }
+
   const handleLogOut = () => {
     localStorage.removeItem("cadastro_user");
     localStorage.removeItem("token");
@@ -99,15 +110,23 @@ export default function Sidebar(props) {
       <div className="subtitle-sidebar">Email</div>
 
       <div className="flex" onClick={handleProfile}>
-        <Icon as={IoPersonSharp} w={5} h={5} /> Perfil
+        <Icon as={IoPersonSharp} w={6} h={6} /> Perfil
       </div>
 
       <div className="flex" onClick={handleCreateEmailClick}>
-        <Icon as={MdOutgoingMail} w={6} h={6} /> Enviar email
+        <Icon as={MdOutgoingMail} w={6} h={6} /> Enviados
       </div>
 
       <div className="flex" onClick={handleCreateEmailClick}>
-        <Icon as={IoIosSettings} w={5} h={5} /> Configurações
+        <Icon as={MdMarkEmailUnread} w={6} h={6} /> Recebidos
+      </div>
+
+      <div className="flex" onClick={handleCreateEmailClick}>
+        <Icon as={IoIosSettings} w={6} h={6} /> Configurações
+      </div>
+
+      <div className="flex" onClick={handleNotificationsClick}>
+        <Icon as={IoMdNotifications } w={6} h={6} /> Notificações
       </div>
 
       <div className="subtitle-sidebar grupos">GRUPOS</div>

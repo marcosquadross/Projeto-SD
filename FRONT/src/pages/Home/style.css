@@ -7,37 +7,11 @@
     color: var(--10-gray);
 }
 
-/* .chakra-modal__body {
-    background-color: var(--10-gray)!important;
-} */
 
-/* .chakra-button {
-    color: #fff!important;
-} */
-
-.edit-icon-gasto:hover {
+.icon:hover {
     cursor: pointer;
 }
 
-.delete-icon-gasto:hover {
-    cursor: pointer;
-}
-
-/*
-
-.tooltip-edit, .tooltip-delete {
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 8px;
-    background-color: #000;
-    color: #fff;
-    font-size: 14px;
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity 0.2s ease-in-out;
-}
 
 .delete-icon-gasto:hover .tooltip-delete {
     visibility: visible;
@@ -121,16 +95,17 @@ span.error-message {
 }
 
 .gasto {
+    display: flex;
     gap: 20px;
     width: 100%;
     min-height: calc(100vh - 12vh);
-    display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-    margin: 0;
-    /* padding: 4.5% 35% 1.5% 2%; pra colocar anúncio */
-    padding: 4.5% 2% 1.5% 2%;
-    /*justify-content: space-evenly; */
+    /* margin: 0; */
+    margin-left: 25px;
+    margin-top: 12px;
+    /* padding: 4.5% 2% 1.5% 2%; */
+    padding-top: 10px;
 }
 
 .dia_gasto{
@@ -140,37 +115,16 @@ span.error-message {
     padding-left: 0.3%;
 }
 
-/* width: 30%;
-    padding: 10px;
-    margin-top: 15px;
-    border-radius: 5px;
-    border: 0.5px solid;
-    background-color: var(--10-gray);
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2); */
-    /* justify-content: space-between; */
-/* var(--10-gray) */
-
-/* .gasto_information {
-    width: 100%;
-    gap: 30px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    background-color: black; 
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-} */
-
 .gasto_information {
     display: grid;
     grid-template-columns: repeat(5, 1fr); /* Defina o número de colunas desejado */
-    gap: 10px;
+    gap: 5px;
     background-color: #8c939439; /* var(--10-gray) rgb(151, 226, 148) #0F1616 */
     padding: 10px;
     border-radius: 8px;
     margin-bottom: 10px;
+    margin-left: 190px;
+    margin-right: 40px;
   }
 
   .gasto_information p {
@@ -188,13 +142,6 @@ span.error-message {
     justify-content: space-between;
 }
 
-h2.green {
-    color: var(--30-dark-green);
-}
-
-h2.red {
-    color: red;
-}
 
 .gasto_information h1 {
     font-size: 24px;
@@ -224,7 +171,6 @@ h2.red {
     padding: 10px;
     display: flex;
     margin-top: 10px;
-    /* margin-right: 5%; */
     align-items: center;
     flex-direction: row;
     justify-content: flex-end;
@@ -237,12 +183,7 @@ h2.red {
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* justify-content: center; */
-    
-    /* gap: 6%; */
     margin-top: 18%;
-
-    /* border: red solid 1px; */
 }
 
 .new-tag-and-gasto-button {
@@ -368,12 +309,7 @@ h2.red {
 .customCheckBoxWrapper .customCheckBox:hover .inner {
     transform: translateY(-2px);
 }
-/* 
-.body {
-    background-color: teal;
-} */
 
 span.hexadecimal{
     font-size: 12px;
 }
-
