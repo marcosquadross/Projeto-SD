@@ -10,74 +10,19 @@ import {
   useToast,
   Text,
   Textarea,
-  FormControl,
-  FormLabel,
-  Input,
 } from "@chakra-ui/react";
 
-import getCurentDate from "../../functions/getCurrentDate";
-
-import axios from "axios";
-
-export default function CreateEmail({
+export default function ShowEmail({
   isOpen,
   onClose,
   initialRef,
   finalRef,
-  emailContent,
+  email,
 }) {
   const toast = useToast();
 
-  const [destinatarios, setDestinatarios] = useState("");
-  const [assunto, setAssunto] = useState("");
-  const [files, setFiles] = useState(null);
-
-  const handleSendEmail = async () => {
-    const data = packFiles(files);
-    const email = {
-      autor: localStorage.getItem("cadastro_user"),
-      destinatarios,
-      assunto,
-      files: data,
-      time: getCurentDate(),
-    };
-
-    try {
-      const response = await axios.post("http://localhost:3001/email", email);
-      toast({
-        title: "Email enviado com sucesso!",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
-      onClose();
-    } catch (error) {
-      toast({
-        title: "Erro ao enviar email!",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    }
-  };
-
-  useEffect(() => {
-    console.log(files);
-  }, [files]);
-
-  const handleFileChange = (e) => {
-    setFiles(e.target.files);
-  };
-
-  const packFiles = (files) => {
-    const data = new FormData();
-
-    [...files].forEach((file, i) => {
-      data.append(`file-${i}`, file, file.name);
-      console.log(`${file.name} adicionado ao pacote de arquivos.`);
-    });
-
-    return data;
+  const handleCloseEmail = () => {
+    onClose();
   };
 
   return (
@@ -91,14 +36,17 @@ export default function CreateEmail({
         <ModalOverlay />
         <ModalContent>
           <ModalHeader mb={0} className="modal_header">
-            Email
+            {email.assunto}
           </ModalHeader>
           <ModalBody>
-            <Text>Remetente: {email.autor}</Text>
-            <Textarea readOnly value={emailContent.assunto}></Textarea>
+            <Text fontSize="md" fontWeight="bold" color={"black"} mb={2}>
+              {email.autor}
+            </Text>
+
+            {email.conteudo}
           </ModalBody>
           <ModalFooter>
-            <Button onClick={handleSendEmail}>Fechar</Button>
+            <Button onClick={handleCloseEmail}>Fechar</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

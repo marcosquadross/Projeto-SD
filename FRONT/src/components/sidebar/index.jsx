@@ -14,7 +14,6 @@ import CreateEmailGroup from "../../modals/createEmailGroup";
 import CreateEmail from "../../modals/createEmail";
 
 import { useDisclosure } from "@chakra-ui/react";
-import { Button } from "@chakra-ui/react";
 
 import axios from "axios";
 
@@ -22,6 +21,8 @@ export default function Sidebar(props) {
   const [grupos, setGrupos] = useState([]);
   const user = localStorage.getItem("cadastro_user");
   const username = localStorage.getItem("cadastro_user");
+
+  const currentPath = window.location.pathname;
 
   const [showGroup, setShowGroup] = useState(false);
 
@@ -58,38 +59,40 @@ export default function Sidebar(props) {
     onClose: onModalCreateEmailClose,
   } = useDisclosure();
 
-  
-    async function handleCreateEmailClick() {
-      onModalCreateEmailOpen();
-    }
+  async function handleCreateEmailClick() {
+    onModalCreateEmailOpen();
+  }
 
-/* Create Email Group Modal */
+  /* Create Email Group Modal */
   const {
     isOpen: isModalCreateEmailGroupOpen,
     onOpen: onModalCreateEmailGroupOpen,
     onClose: onModalCreateEmailGroupClose,
   } = useDisclosure();
 
-
   const handleCreateEmailGroupClick = () => {
     onModalCreateEmailGroupOpen();
   };
 
-  const handleProfile = () => {
+  const handleGoToProfile = () => {
     navigate("/profile");
   };
 
-  const handleNotificationsClick = () => {
+  const handleGoToNotifications = () => {
     navigate("/notifications");
-  }
+  };
 
-  const handleReceivedEmailsClick = () => {
-    navigate("/received-emails");
-  }
+  const handleGoToReceivedEmails = () => {
+    navigate("/home");
+  };
 
-  const handleSentEmailsClick = () => {
+  const handleGoToSentEmails = () => {
     navigate("/sent-emails");
-  }
+  };
+
+  const handleGoToSettings = () => {
+    navigate("/settings");
+  };
 
   const handleLogOut = () => {
     localStorage.removeItem("cadastro_user");
@@ -109,24 +112,30 @@ export default function Sidebar(props) {
 
       <div className="subtitle-sidebar">Email</div>
 
-      <div className="flex" onClick={handleProfile}>
+      <div className="flex" onClick={handleGoToProfile}>
         <Icon as={IoPersonSharp} w={6} h={6} /> Perfil
       </div>
 
-      <div className="flex" onClick={handleCreateEmailClick}>
+      <div
+        className={currentPath === "/sent-emails" ? "isPage flex" : "flex"}
+        onClick={handleGoToSentEmails}
+      >
         <Icon as={MdOutgoingMail} w={6} h={6} /> Enviados
       </div>
 
-      <div className="flex" onClick={handleCreateEmailClick}>
+      <div
+        className={currentPath === "/home" ? "isPage flex" : "flex"}
+        onClick={handleGoToReceivedEmails}
+      >
         <Icon as={MdMarkEmailUnread} w={6} h={6} /> Recebidos
       </div>
 
-      <div className="flex" onClick={handleCreateEmailClick}>
+      <div className="flex" onClick={handleGoToSettings}>
         <Icon as={IoIosSettings} w={6} h={6} /> Configurações
       </div>
 
-      <div className="flex" onClick={handleNotificationsClick}>
-        <Icon as={IoMdNotifications } w={6} h={6} /> Notificações
+      <div className="flex" onClick={handleGoToNotifications}>
+        <Icon as={IoMdNotifications} w={6} h={6} /> Notificações
       </div>
 
       <div className="subtitle-sidebar grupos">GRUPOS</div>

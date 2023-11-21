@@ -212,6 +212,11 @@ header.home {
     transition: color 0.3s ease;
 }
 
+.isPage {
+    color: #ffff;
+    background-color: #1b272775;
+}
+
 .logout {
     /* fixadar ao bottom */
     position: absolute;

@@ -2,8 +2,8 @@ import React from "react";
 import LogUp from "../pages/LogUp";
 import LogIn from "../pages/LogIn";
 import Home from "../pages/Home";
+import SentEmails from "../pages/SentEmails";
 import { Navigate, createBrowserRouter } from "react-router-dom";
-import { elements } from "chart.js";
 
 function PrivateRoute({ children }) {
     const token = localStorage.getItem("token");
@@ -33,6 +33,11 @@ const Routering = createBrowserRouter([
         //     <Home />
         // </PrivateRoute>
     },
+
+    {
+        path: "/sent-emails",
+        element: <SentEmails/>,
+    }
     
 ]);
 
