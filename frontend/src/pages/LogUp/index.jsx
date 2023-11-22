@@ -22,19 +22,19 @@ export default function LogUp() {
         .nonempty('Este campo é obrigatório')
         .regex(/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/, 'O nome não pode conter números e símbolos'),
 
-      first_name: z.string()
+      name: z.string()
         .nonempty('Este campo é obrigatório')
         .regex(/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/, 'O nome não pode conter números e símbolos')
         .transform(name => {
           return name[0].toLocaleUpperCase().concat(name.substring(1))
         }),
 
-      last_name: z.string()
-        .nonempty('Este campo é obrigatório')
-        .regex(/^[^0-9]*$/, 'O nome não pode conter números')
-        .transform(last_name => {
-          return last_name[0].toLocaleUpperCase().concat(last_name.substring(1))
-        }),
+      // last_name: z.string()
+      //   .nonempty('Este campo é obrigatório')
+      //   .regex(/^[^0-9]*$/, 'O nome não pode conter números')
+      //   .transform(last_name => {
+      //     return last_name[0].toLocaleUpperCase().concat(last_name.substring(1))
+      //   }),
 
 
       email: z.string()
@@ -44,7 +44,14 @@ export default function LogUp() {
 
       password: z.string()
         .nonempty('Este campo é obrigatório')
-        .min(6, 'Mínimo de 6 caracteres')
+        .min(6, 'Mínimo de 6 caracteres'),
+
+      phone: z.string()
+        .nonempty('Este campo é obrigatório')
+        .min(10, 'Mínimo de 10 caracteres')
+        .max(11, 'Máximo de 11 caracteres')
+        .regex(/^[0-9]+$/, 'O telefone só pode conter números'),
+      
     }
   )
 
@@ -66,41 +73,6 @@ export default function LogUp() {
   )
 
   const onSubmit = (data) => {
-    // console.log(data);
-    // axios.post('http://localhost:8000/auth/cadastro/', data)
-    //   .then(response => {
-    //     if (response.status === 200) {
-    //       toast({
-    //         title: 'Usuário cadastrado com sucesso.',
-    //         status: 'success',
-    //         isClosable: true,
-    //         duration: 3000,
-    //       });
-    //       navigate('/', { replace: true });
-    //     }
-    //   })
-    //   .catch(error => {
-    //     if (error.response) {
-    //       const statusCode = parseInt(error.response.status);
-    //       if (statusCode === 409) {
-    //         toast({
-    //           title: 'Usuário ou email já cadastrados no sistema',
-    //           status: 'error',
-    //           isClosable: true,
-    //           duration: 3000,
-    //         });
-    //       } else if (statusCode === 400) {
-    //         toast({
-    //           title: 'Dados de cadastro não estão nos parâmetros aceitos',
-    //           status: 'error',
-    //           isClosable: true,
-    //           duration: 3000,
-    //         });
-    //       } 
-    //     } else {
-    //       console.log("Erro de solicitação:", error.message);
-    //     }
-    //   });
     LogUpFunc(data, toast, navigate)
   }
 
@@ -112,24 +84,24 @@ export default function LogUp() {
 
         <div>
 
-          <label style={{ color: '#D5DDDF' }} htmlFor='first_name'>Nome</label>
+          <label style={{ color: '#D5DDDF' }} htmlFor='name'>Nome</label>
           <br></br>
 
           <Input
             type="text"
             style={{ color: '#D5DDDF' }}
-            id='first_name'
-            name='first_name'
-            {...register('first_name')}
+            id='name'
+            name='name'
+            {...register('name')}
             htmlSize={27}
             width='auto'
           />
 
-          {errors.first_name && <span className='error'>{errors.first_name.message} </span>}
+          {errors.name && <span className='error'>{errors.name.message} </span>}
 
         </div>
 
-        <div>
+        {/* <div>
 
           <label style={{ color: '#D5DDDF' }} htmlFor="last_name">Sobrenome</label>
           <br></br>
@@ -146,7 +118,7 @@ export default function LogUp() {
 
           {errors.last_name && <span className='error'>{errors.last_name.message} </span>}
 
-        </div>
+        </div> */}
 
         <div>
 
@@ -209,6 +181,25 @@ export default function LogUp() {
 
           {errors.password && <span className='error'>{errors.password.message} </span>}
 
+        </div>
+
+        <div>
+            
+            <label style={{ color: '#D5DDDF' }} htmlFor="phone">Telefone</label>
+            <br></br>
+  
+            <Input
+              type="text"
+              style={{ color: '#D5DDDF' }}
+              id='phone'
+              name='phone'
+              {...register('phone')}
+              htmlSize={27}
+              width='auto'
+            />
+  
+            {errors.phone && <span className='error'>{errors.phone.message} </span>}
+          
         </div>
 
         <Button type="submit" className='submit-button' variant='solid' size="md">Registrar</Button>

@@ -7,8 +7,10 @@ import { BiLogOut } from "react-icons/bi";
 import { MdGroups, MdOutgoingMail, MdMarkEmailUnread } from "react-icons/md";
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import { RiArrowDropDownLine, RiArrowDropUpLine } from "react-icons/ri";
-import { IoPersonSharp } from "react-icons/io5";
-import { IoIosSettings, IoMdNotifications } from "react-icons/io";
+import { IoMdNotifications } from "react-icons/io";
+import { FaPencil } from "react-icons/fa6";
+
+import { Avatar, AvatarBadge, AvatarGroup } from '@chakra-ui/react'
 
 import CreateEmailGroup from "../../modals/createEmailGroup";
 import CreateEmail from "../../modals/createEmail";
@@ -90,10 +92,6 @@ export default function Sidebar(props) {
     navigate("/sent-emails");
   };
 
-  const handleGoToSettings = () => {
-    navigate("/settings");
-  };
-
   const handleLogOut = () => {
     localStorage.removeItem("cadastro_user");
     localStorage.removeItem("token");
@@ -102,19 +100,19 @@ export default function Sidebar(props) {
 
   return (
     <div className="sidebar">
-      <div className="container-logo-username">
-        <img src="../../../guma.png" className="guma-logo" alt="GUMA Logo" />
+      <div className="container-logo-username" onClick={handleGoToProfile}>
+        {/* <img src="../../../guma.png" className="guma-logo" alt="GUMA Logo" /> */}
+        <Avatar
+          name="Dan Abrahmov"
+          src="https://bit.ly/broken-link"
+          className="guma-logo"
+        />
         <p className="presentation">
-          Olá,<br></br>
-          {props.user}
+          Dan Abrahmov
         </p>
       </div>
 
       <div className="subtitle-sidebar">Email</div>
-
-      <div className="flex" onClick={handleGoToProfile}>
-        <Icon as={IoPersonSharp} w={6} h={6} /> Perfil
-      </div>
 
       <div
         className={currentPath === "/sent-emails" ? "isPage flex" : "flex"}
@@ -130,11 +128,14 @@ export default function Sidebar(props) {
         <Icon as={MdMarkEmailUnread} w={6} h={6} /> Recebidos
       </div>
 
-      <div className="flex" onClick={handleGoToSettings}>
-        <Icon as={IoIosSettings} w={6} h={6} /> Configurações
+      <div className="flex" onClick={handleCreateEmailClick}>
+        <Icon as={FaPencil} w={5} h={5} /> Escrever
       </div>
 
-      <div className="flex" onClick={handleGoToNotifications}>
+      <div
+        className={currentPath === "/notifications" ? "isPage flex" : "flex"}
+        onClick={handleGoToNotifications}
+      >
         <Icon as={IoMdNotifications} w={6} h={6} /> Notificações
       </div>
 

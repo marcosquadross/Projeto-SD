@@ -15,8 +15,6 @@
     --10-gray-transparent: rgba(213, 221, 223, 0.8);
     --10-gray-transparent-2: rgba(213, 221, 223, 0.2);
     --dark-gray: #8c939439;
-
-    /* --10-cian: #00fffe; usa essa não, mt artificial */
 }
 
 .body {
@@ -73,6 +71,10 @@ header.home {
     align-items: center;
     justify-content: center;
 }
+
+.container-logo-username:hover {
+    cursor: pointer;
+}
  
 .guma-logo {
     max-width: 25%;
@@ -115,8 +117,6 @@ header.home {
     padding: 0px;
     padding-left: 2%;
     margin: 2% 0 0 0;
-
-    /* colocar espaçamento entre as letras */
 }
 
 .grupos {
