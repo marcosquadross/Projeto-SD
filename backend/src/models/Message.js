@@ -12,6 +12,9 @@ const messageSchema = new Schema({
         type: mongoose.Types.ObjectId,
         required: true,
     },
+    content: {
+        type: String,
+    },
     time: {
         type: Date,
         required: true,
