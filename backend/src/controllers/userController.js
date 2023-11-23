@@ -1,16 +1,20 @@
+import bcrypt from 'bcrypt'
+import { generateToken } from '../auth.js'
 import { User as UserModel } from "../models/User.js"
 
 const userController = {
 
     create: async (req, res) => {
-        
         try {
+
+            const salt = bcrypt.genSaltSync(12)
+            const passwordHash = bcrypt.hashSync(req.body.password, salt)
+            
             const user = {
                 username: req.body.username,
                 name: req.body.name,
                 telephone: req.body.telephone,
-                email: req.body.email,
-                password: req.body.password,
+                password: passwordHash,
             }
 
             const response = await UserModel.create(user)
@@ -66,12 +70,14 @@ const userController = {
 
     update: async (req, res) => {
         try {
+            const salt = bcrypt.genSaltSync(12)
+            const passwordHash = bcrypt.hashSync(req.body.password, salt)
+
             const user = {
                 username: req.body.username,
                 name: req.body.name,
                 telephone: req.body.telephone,
-                email: req.body.email,
-                password: req.body.password,
+                password: passwordHash,
             }
 
             const userUpdated = await UserModel.findByIdAndUpdate(req.params.id, user) 
@@ -87,8 +93,36 @@ const userController = {
             console.log(error) 
             res.status(500).json({ msg: "Ocorreu um erro ao atualizar o usuário." })
         }
-    }
+    },
 
+    login: async (req, res) => {
+        try {
+            const { username, password } = req.body
+
+            const user = await UserModel.findOne({ username })
+
+            console.log(user)
+
+            if (!user) {
+                res.status(404).json({ msg: "Usuário não encontrado." })
+                return
+            }
+
+            const isValidPassword = bcrypt.compareSync(password, user.password)
+
+            if (!isValidPassword) {
+                res.status(403).json({ msg: "Senha inválida." })
+                return
+            }
+
+            const token = generateToken({ id: user._id, username: user.username })
+
+            res.status(200).json({ user, token })
+        } catch (error) {
+            console.log(`ERRO: ${error}`)   
+            res.status(500).json({ msg: "Ocorreu um erro ao fazer o login." })
+        }
+    },
 }
 
 export { userController }
