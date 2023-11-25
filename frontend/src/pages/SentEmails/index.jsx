@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import "./style.css";
 import "../../main.css";
 
+import { GetSentEmails } from "../../services";
+
 import Sidebar from "../../components/sidebar";
-import { Icon, Button, useDisclosure } from "@chakra-ui/react";
+import { Icon, Button, useDisclosure, useToast } from "@chakra-ui/react";
 import {
   IoMailOutline,
   IoMailOpenOutline,
@@ -16,27 +18,29 @@ import { GoReply } from "react-icons/go";
 import ShowEmail from "../../modals/showEmail";
 
 export default function SentEmails() {
-  const username = localStorage.getItem("cadastro_user");
-
+  const user_data = JSON.parse(localStorage.getItem("user_data"));
+  const username = user_data.username;
+  
   const [selectedEmail, setSelectedEmail] = useState(null);
-
-  // cosnt [emails, setEmails] = useState([]);
+  const [sentEmails, setSentEmails] = useState([]);
+  
+  const toast = useToast();
+  
+  const handleShowEmail = (email) => {
+    setSelectedEmail(email);
+    onModalShowEmailOpen();
+  };
 
   useEffect(() => {
-    // axios({
-    //   method: "post",
-    //   url: "http://localhost:8000/email/emails-usuario/",
-    //   data: {
-    //     username: user,
-    //   },
-    // })
-    //   .then((response) => {
-    //     setEmails(response.data);
-    //     console.log(response.data);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
+    const fetchData = async () => {
+      try {
+        const res = await GetSentEmails(user_data.user_id, toast);
+        setSentEmails(res);
+      } catch (error) {
+        console.error("Erro ao obter os emails:", error);
+      }
+    };
+    fetchData();
   }, []);
 
   const {
@@ -45,70 +49,6 @@ export default function SentEmails() {
     onClose: onModalShowEmailClose,
   } = useDisclosure();
 
-  const handleShowEmail = (email) => {
-    setSelectedEmail(email);
-    onModalShowEmailOpen();
-  };
-
-  const emails = [
-    {
-      id: 1,
-      assunto: "Assunto 1",
-      autor: "Autor 1",
-      time: "01/01/2021",
-      destinatarios: ["Destinatario 1", "Destinatario 2"],
-      files: [
-        {
-          id: 1,
-          nome: "Arquivo 1",
-          url: "http://localhost:3001/files/Arquivo 1",
-        },
-        {
-          id: 2,
-          nome: "Arquivo 2",
-          url: "http://localhost:3001/files/Arquivo 2",
-        },
-      ],
-    },
-    {
-      id: 2,
-      assunto: "Assunto 2",
-      autor: "Autor 2",
-      time: "02/01/2021",
-      destinatarios: ["Destinatario 1", "Destinatario 2"],
-      files: [
-        {
-          id: 1,
-          nome: "Arquivo 1",
-          url: "http://localhost:3001/files/Arquivo 1",
-        },
-        {
-          id: 2,
-          nome: "Arquivo 2",
-          url: "http://localhost:3001/files/Arquivo 2",
-        },
-      ],
-    },
-    {
-      id: 3,
-      assunto: "Assunto 3",
-      autor: "Autor 3",
-      time: "03/01/2021",
-      destinatarios: ["Destinatario 1", "Destinatario 2"],
-      files: [
-        {
-          id: 1,
-          nome: "Arquivo 1",
-          url: "http://localhost:3001/files/Arquivo 1",
-        },
-        {
-          id: 2,
-          nome: "Arquivo 2",
-          url: "http://localhost:3001/files/Arquivo 2",
-        },
-      ],
-    },
-  ];
 
   return (
     <>
@@ -120,15 +60,15 @@ export default function SentEmails() {
       </div>
 
       <div className="gasto">
-        {emails.map((email) => (
+        {sentEmails?.map((email) => (
           <div
             className="gasto_information"
             onClick={() => handleShowEmail(email)}
           >
-            <p>{email.assunto}</p>
-            <p>{email.autor}</p>
+            <p>{email.title}</p>
+            <p>{email.author}</p>
             <p>{email.time}</p>
-            <p>{email.destinatarios}</p>
+            <p>{email.recipients}</p>
             <div>
               <Icon
                 as={IoMailOutline}

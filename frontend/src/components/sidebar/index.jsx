@@ -30,12 +30,7 @@ export default function Sidebar(props) {
 
   const navigate = useNavigate();
 
-  function navigateGroup(id) {
-    console.log("navigate");
-    console.log(id);
-    localStorage.setItem("grupo_id", id);
-    navigate("/group");
-  }
+
   function getGroupsUser() {
     axios({
       method: "post",
@@ -46,7 +41,6 @@ export default function Sidebar(props) {
     })
       .then((response) => {
         setGrupos(response.data);
-        console.log(response.data);
         setShowGroup(!showGroup);
       })
       .catch((error) => {

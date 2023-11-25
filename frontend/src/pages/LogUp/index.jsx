@@ -8,9 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { Input, InputGroup, InputRightElement, Button, Link, useToast } from '@chakra-ui/react';
 
-import { LogUpFunc } from '../../services/users';
-
-import axios from 'axios';
+import { LogUpFunc } from '../../services';
 
 export default function LogUp() {
   const toast = useToast();
@@ -37,16 +35,16 @@ export default function LogUp() {
       //   }),
 
 
-      email: z.string()
-        .nonempty('Este campo é obrigatório')
-        .email('Formato de email inválido')
-        .toLowerCase(),
+      // email: z.string()
+      //   .nonempty('Este campo é obrigatório')
+      //   .email('Formato de email inválido')
+      //   .toLowerCase(),
 
       password: z.string()
         .nonempty('Este campo é obrigatório')
         .min(6, 'Mínimo de 6 caracteres'),
 
-      phone: z.string()
+      telephone: z.string()
         .nonempty('Este campo é obrigatório')
         .min(10, 'Mínimo de 10 caracteres')
         .max(11, 'Máximo de 11 caracteres')
@@ -138,7 +136,8 @@ export default function LogUp() {
           {errors.username && <span className='error'>{errors.username.message} </span>}
 
         </div>
-
+      
+      {/*
         <div>
 
           <label style={{ color: '#D5DDDF' }} htmlFor="email">E-mail</label>
@@ -157,6 +156,7 @@ export default function LogUp() {
           {errors.email && <span className='error'>{errors.email.message}</span>}
 
         </div>
+      */}
 
         <div>
 
@@ -185,20 +185,20 @@ export default function LogUp() {
 
         <div>
             
-            <label style={{ color: '#D5DDDF' }} htmlFor="phone">Telefone</label>
+            <label style={{ color: '#D5DDDF' }} htmlFor="telephone">Telefone</label>
             <br></br>
   
             <Input
               type="text"
               style={{ color: '#D5DDDF' }}
-              id='phone'
-              name='phone'
-              {...register('phone')}
+              id='telephone'
+              name='telephone'
+              {...register('telephone')}
               htmlSize={27}
               width='auto'
             />
   
-            {errors.phone && <span className='error'>{errors.phone.message} </span>}
+            {errors.telephone && <span className='error'>{errors.telephone.message} </span>}
           
         </div>
 

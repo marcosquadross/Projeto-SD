@@ -313,3 +313,9 @@ span.error-message {
 span.hexadecimal{
     font-size: 12px;
 }
+
+
+.search-bar {
+   background-color: #fff;
+   border-radius: 5px;
+}

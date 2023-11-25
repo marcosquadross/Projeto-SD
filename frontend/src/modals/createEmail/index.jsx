@@ -17,43 +17,37 @@ import {
 
 import getCurentDate from "../../functions/getCurrentDate";
 
-import axios from "axios";
+import { SendEmail } from "../../services";
 
 export default function CreateEmail({ isOpen, onClose, initialRef, finalRef }) {
   const toast = useToast();
 
-  const [destinatarios, setDestinatarios] = useState("");
   const [assunto, setAssunto] = useState("");
+  const [destinatarios, setDestinatarios] = useState("");
+  const [content, setContent] = useState("");
   const [files, setFiles] = useState(null);
 
+  const user_data = JSON.parse(localStorage.getItem("user_data"));
+
   const handleSendEmail = async () => {
-    const data = packFiles(files);
+    // const data = packFiles(files);
+    let data;
+    files != null ? data = packFiles(files) : data = "";
+
+    let dest = destinatarios.split(",");
+
     const email = {
-      autor: localStorage.getItem("cadastro_user"),
-      destinatarios,
-      assunto,
-      files: data,
-      time: getCurentDate(),
+      title: assunto,
+      author: user_data.user_id,
+      content,
+      time: new Date(),
+      recipients: dest,
+      files: files != null ? files : []
     };
 
-    try {
-      const response = await axios.post("http://localhost:3001/email", email);
-      toast({
-        title: "Email enviado com sucesso!",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
-      onClose();
-    } catch (error) {
-      toast({
-        title: "Erro ao enviar email!",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+    await SendEmail(email, toast, onClose);
+
     }
-  };
 
   useEffect(() => {
     console.log(files);
@@ -99,9 +93,19 @@ export default function CreateEmail({ isOpen, onClose, initialRef, finalRef }) {
 
             <FormControl id="assunto" mb={4}>
               <FormLabel>Assunto</FormLabel>
-              <Textarea
+              <Input
+                type="text"
                 placeholder="Assunto"
                 onChange={(e) => setAssunto(e.target.value)}
+              />
+            </FormControl>
+
+            <FormControl id="mensagem" mb={4}>
+              <FormLabel>Mensagem</FormLabel>
+              <Textarea
+                placeholder="Mensagem"
+                size="lg"
+                onChange={(e) => setContent(e.target.value)}
               />
             </FormControl>
 

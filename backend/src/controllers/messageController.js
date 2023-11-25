@@ -1,16 +1,40 @@
 import { Message as MessageModel } from "../models/Message.js"
+import { User as UserModel } from "../models/User.js"
+import { ObjectId } from 'mongodb';
+
+async function getUserIdByName(name) {
+    const user = await UserModel.findOne({ username: name })
+
+    if (user){
+        return user._id
+    } else {
+        throw new Error(`Usuário user ${name} não encontrado.`);
+    }
+}
+
+async function getUsersIdByName(names) {
+    var users = []
+    for (const name of names) {
+        users.push(await getUserIdByName(name))
+    }
+    return users
+}
 
 const messageController = {
 
     create: async (req, res) => {
         
         try {
+            
+            const dest = await getUsersIdByName(req.body.recipients)
+            const author = new ObjectId(req.body.author)
+
             const message = {
                 title: req.body.title,
-                author: req.body.author,
+                author: author,
                 content: req.body.content,
                 time: req.body.time,
-                recipients: req.body.recipients,
+                recipients: dest,
                 files: req.body.files,
             }
 
@@ -42,7 +66,10 @@ const messageController = {
 
     getByAuthor: async (req, res) => {
         try {
-            const messages = await MessageModel.find({ author: req.params.id })
+
+            const author_id = new ObjectId(req.params.id)
+
+            const messages = await MessageModel.find({ author: author_id })
 
             if (!messages) {
                 res.status(404).json({ msg: "Nenhuma mensagem encontrada" })

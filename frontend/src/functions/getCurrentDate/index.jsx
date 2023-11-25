@@ -1,5 +1,5 @@
 export default function getCurentDate() {
-  var date = new Date();
+  var date = new Date()
   var day = date.getDate();
   var month = date.getMonth() + 1;
   var year = date.getFullYear();
@@ -8,11 +8,28 @@ export default function getCurentDate() {
   var minute = date.getMinutes();
   var second = date.getSeconds();
 
-  var diaFormatado = dia < 10 ? "0" + dia : dia;
-  var mesFormatado = mes < 10 ? "0" + mes : mes;
-  var horaFormatada = hora < 10 ? "0" + hora : hora;
-  var minutosFormatados = minutos < 10 ? "0" + minutos : minutos;
-  var segundosFormatados = segundos < 10 ? "0" + segundos : segundos;
+  day = day < 10 ? "0" + day : day;
+  month = month < 10 ? "0" + month : month;
+  hour = hour < 10 ? "0" + hour : hour;
+  minute = minute < 10 ? "0" + minute : minute;
+  second = second < 10 ? "0" + second : second;
 
-  return `${day}/${month}/${year} ${hour}:${minute}:${second}`;
+  console.log(
+    "Data e hora atual: " +
+      day +
+      "/" +
+      month +
+      "/" +
+      year +
+      " " +
+      hour +
+      ":" +
+      minute +
+      ":" +
+      second
+  );
+
+  console.log(date);
+  // return `${day}/${month}/${year} ${hour}:${minute}:${second}`;
+  return `${day}/${month}/${year}`;
 }

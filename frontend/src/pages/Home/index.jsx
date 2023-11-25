@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./style.css";
 import "../../main.css";
+// import SearchBar from "../../components/searchBar";
 
 import Sidebar from "../../components/sidebar";
-import CreateEmail from "../../modals/createEmail";
 import { Icon, useDisclosure } from "@chakra-ui/react";
 import {
   IoMailOutline,
@@ -13,12 +13,14 @@ import {
 
 import { GoReply } from "react-icons/go";
 
+import CreateEmail from "../../modals/createEmail";
 import ShowEmail from "../../modals/showEmail";
 
 export default function Home() {
-  const username = localStorage.getItem("cadastro_user");
+  const username = localStorage.getItem("username");
 
   const [selectedEmail, setSelectedEmail] = useState(null);
+  const [emails, setEmails] = useState([]);
 
   const {
     isOpen: isModalCreateEmailOpen,
@@ -37,65 +39,65 @@ export default function Home() {
     onModalShowEmailOpen();
   };
 
-  const emails = [
-    {
-      id: 1,
-      assunto: "Assunto 1",
-      autor: "Autor 1",
-      time: "01/01/2021",
-      destinatarios: ["Destinatario 1", "Destinatario 2"],
-      files: [
-        {
-          id: 1,
-          nome: "Arquivo 1",
-          url: "http://localhost:3001/files/Arquivo 1",
-        },
-        {
-          id: 2,
-          nome: "Arquivo 2",
-          url: "http://localhost:3001/files/Arquivo 2",
-        },
-      ],
-    },
-    {
-      id: 2,
-      assunto: "Assunto 2",
-      autor: "Autor 2",
-      time: "02/01/2021",
-      destinatarios: ["Destinatario 1", "Destinatario 2"],
-      files: [
-        {
-          id: 1,
-          nome: "Arquivo 1",
-          url: "http://localhost:3001/files/Arquivo 1",
-        },
-        {
-          id: 2,
-          nome: "Arquivo 2",
-          url: "http://localhost:3001/files/Arquivo 2",
-        },
-      ],
-    },
-    {
-      id: 3,
-      assunto: "Assunto 3",
-      autor: "Autor 3",
-      time: "03/01/2021",
-      destinatarios: ["Destinatario 1", "Destinatario 2"],
-      files: [
-        {
-          id: 1,
-          nome: "Arquivo 1",
-          url: "http://localhost:3001/files/Arquivo 1",
-        },
-        {
-          id: 2,
-          nome: "Arquivo 2",
-          url: "http://localhost:3001/files/Arquivo 2",
-        },
-      ],
-    },
-  ];
+  // const emails = [
+  //   {
+  //     id: 1,
+  //     assunto: "Assunto 1",
+  //     autor: "Autor 1",
+  //     time: "01/01/2021",
+  //     destinatarios: ["Destinatario 1", "Destinatario 2"],
+  //     files: [
+  //       {
+  //         id: 1,
+  //         nome: "Arquivo 1",
+  //         url: "http://localhost:3001/files/Arquivo 1",
+  //       },
+  //       {
+  //         id: 2,
+  //         nome: "Arquivo 2",
+  //         url: "http://localhost:3001/files/Arquivo 2",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     id: 2,
+  //     assunto: "Assunto 2",
+  //     autor: "Autor 2",
+  //     time: "02/01/2021",
+  //     destinatarios: ["Destinatario 1", "Destinatario 2"],
+  //     files: [
+  //       {
+  //         id: 1,
+  //         nome: "Arquivo 1",
+  //         url: "http://localhost:3001/files/Arquivo 1",
+  //       },
+  //       {
+  //         id: 2,
+  //         nome: "Arquivo 2",
+  //         url: "http://localhost:3001/files/Arquivo 2",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     id: 3,
+  //     assunto: "Assunto 3",
+  //     autor: "Autor 3",
+  //     time: "03/01/2021",
+  //     destinatarios: ["Destinatario 1", "Destinatario 2"],
+  //     files: [
+  //       {
+  //         id: 1,
+  //         nome: "Arquivo 1",
+  //         url: "http://localhost:3001/files/Arquivo 1",
+  //       },
+  //       {
+  //         id: 2,
+  //         nome: "Arquivo 2",
+  //         url: "http://localhost:3001/files/Arquivo 2",
+  //       },
+  //     ],
+  //   },
+  // ];
 
   return (
     <>
@@ -103,6 +105,9 @@ export default function Home() {
       <div className="body">
         <header className="home">
           <h1 className="page-title">Recebidos</h1>
+          {/* <div className="search-bar">
+            <SearchBar />
+          </div> */}
         </header>
       </div>
 
