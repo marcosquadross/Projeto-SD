@@ -19,7 +19,7 @@ import getCurentDate from "../../functions/getCurrentDate";
 
 import { SendEmail } from "../../services";
 
-export default function CreateEmail({ isOpen, onClose, initialRef, finalRef }) {
+export default function CreateEmail({ isOpen, onClose, initialRef, finalRef, isReply, email}) {
   const toast = useToast();
 
   const [assunto, setAssunto] = useState("");
@@ -36,16 +36,25 @@ export default function CreateEmail({ isOpen, onClose, initialRef, finalRef }) {
 
     let dest = destinatarios.split(",");
 
-    const email = {
+    let email_data = {};
+
+    isReply != true ? email_data = {
       title: assunto,
       author: user_data.user_id,
       content,
       time: new Date(),
       recipients: dest,
       files: files != null ? files : []
+    } : email_data = {
+      title: "Re: " + email.title,
+      author: user_data.user_id,
+      content,
+      time: new Date(),
+      recipients: [email.author],
+      files: files != null ? files : []
     };
 
-    await SendEmail(email, toast, onClose);
+    await SendEmail(email_data, toast, onClose);
 
     }
 
@@ -79,7 +88,7 @@ export default function CreateEmail({ isOpen, onClose, initialRef, finalRef }) {
         <ModalOverlay />
         <ModalContent>
           <ModalHeader mb={0} className="modal_header">
-            Criar Email
+            {isReply != true ? "Novo Email" : "Responder Email"}
           </ModalHeader>
           <ModalBody>
             <FormControl id="destinatarios" mb={4}>
@@ -87,7 +96,10 @@ export default function CreateEmail({ isOpen, onClose, initialRef, finalRef }) {
               <Input
                 type="text"
                 placeholder="Destinatários"
-                onChange={(e) => setDestinatarios(e.target.value)}
+                onChange={isReply != true ? (e) => setDestinatarios(e.target.value) : (e) => setDestinatarios(email.author)}
+                // onChange={(e) => setDestinatarios(e.target.value)}
+                isReadOnly={isReply}
+                value={isReply != true ? destinatarios : email.author}
               />
             </FormControl>
 
@@ -96,7 +108,10 @@ export default function CreateEmail({ isOpen, onClose, initialRef, finalRef }) {
               <Input
                 type="text"
                 placeholder="Assunto"
-                onChange={(e) => setAssunto(e.target.value)}
+                onChange = {isReply != true ? (e) => setAssunto(e.target.value) : (e) => setAssunto("Re: " + email.title)}
+                // onChange={(e) => setAssunto(e.target.value)}
+                isReadOnly={isReply}
+                value={isReply != true ? assunto : "Re: " + email.title}
               />
             </FormControl>
 

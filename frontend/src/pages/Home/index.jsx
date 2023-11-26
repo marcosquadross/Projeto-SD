@@ -4,7 +4,7 @@ import "../../main.css";
 // import SearchBar from "../../components/searchBar";
 
 import Sidebar from "../../components/sidebar";
-import { Icon, useDisclosure } from "@chakra-ui/react";
+import { Icon, useDisclosure, useToast } from "@chakra-ui/react";
 import {
   IoMailOutline,
   IoMailOpenOutline,
@@ -13,14 +13,38 @@ import {
 
 import { GoReply } from "react-icons/go";
 
+import { GetReceivedEmails } from "../../services";
+
 import CreateEmail from "../../modals/createEmail";
 import ShowEmail from "../../modals/showEmail";
 
 export default function Home() {
-  const username = localStorage.getItem("username");
+  // const username = localStorage.getItem("username");
+  const user_data = JSON.parse(localStorage.getItem("user_data"));
+  const username = user_data.username;
+
+  const toast = useToast();
 
   const [selectedEmail, setSelectedEmail] = useState(null);
-  const [emails, setEmails] = useState([]);
+  const [receivedEmails, setReceivedEmails] = useState([]);
+  const [isReply, setIsReply] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await GetReceivedEmails(user_data.user_id, toast);
+        setReceivedEmails(res);
+      } catch (error) {
+        console.error("Erro ao obter os emails:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleReplyEmail = (email) => {
+    setIsReply(true);
+    onModalCreateEmailOpen()
+  };
 
   const {
     isOpen: isModalCreateEmailOpen,
@@ -39,66 +63,6 @@ export default function Home() {
     onModalShowEmailOpen();
   };
 
-  // const emails = [
-  //   {
-  //     id: 1,
-  //     assunto: "Assunto 1",
-  //     autor: "Autor 1",
-  //     time: "01/01/2021",
-  //     destinatarios: ["Destinatario 1", "Destinatario 2"],
-  //     files: [
-  //       {
-  //         id: 1,
-  //         nome: "Arquivo 1",
-  //         url: "http://localhost:3001/files/Arquivo 1",
-  //       },
-  //       {
-  //         id: 2,
-  //         nome: "Arquivo 2",
-  //         url: "http://localhost:3001/files/Arquivo 2",
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     id: 2,
-  //     assunto: "Assunto 2",
-  //     autor: "Autor 2",
-  //     time: "02/01/2021",
-  //     destinatarios: ["Destinatario 1", "Destinatario 2"],
-  //     files: [
-  //       {
-  //         id: 1,
-  //         nome: "Arquivo 1",
-  //         url: "http://localhost:3001/files/Arquivo 1",
-  //       },
-  //       {
-  //         id: 2,
-  //         nome: "Arquivo 2",
-  //         url: "http://localhost:3001/files/Arquivo 2",
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     id: 3,
-  //     assunto: "Assunto 3",
-  //     autor: "Autor 3",
-  //     time: "03/01/2021",
-  //     destinatarios: ["Destinatario 1", "Destinatario 2"],
-  //     files: [
-  //       {
-  //         id: 1,
-  //         nome: "Arquivo 1",
-  //         url: "http://localhost:3001/files/Arquivo 1",
-  //       },
-  //       {
-  //         id: 2,
-  //         nome: "Arquivo 2",
-  //         url: "http://localhost:3001/files/Arquivo 2",
-  //       },
-  //     ],
-  //   },
-  // ];
-
   return (
     <>
       <Sidebar user={username} />
@@ -112,15 +76,15 @@ export default function Home() {
       </div>
 
       <div className="gasto">
-        {emails.map((email) => (
+        {receivedEmails.map((email) => (
           <div
             className="gasto_information"
             onClick={() => handleShowEmail(email)}
           >
-            <p>{email.assunto}</p>
-            <p>{email.autor}</p>
+            <p>{email.title}</p>
+            <p>{email.author}</p>
             <p>{email.time}</p>
-            <p>{email.destinatarios}</p>
+            <p>{email.recipients}</p>
             <div>
               <Icon
                 as={IoMailOutline}
@@ -145,7 +109,7 @@ export default function Home() {
                 w={6}
                 h={6}
                 color="gray.500"
-                onClick={() => onModalCreateEmailOpen()}
+                onClick={() => handleReplyEmail(email)}
                 style={{ cursor: "pointer" }}
               />
             </div>
@@ -168,6 +132,8 @@ export default function Home() {
           isOpen={isModalCreateEmailOpen}
           onClose={onModalCreateEmailClose}
           user={username}
+          isReply={isReply}
+          email={selectedEmail}
         ></CreateEmail>
       </div>
     </>

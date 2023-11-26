@@ -20,6 +20,20 @@ async function getUsersIdByName(names) {
     return users
 }
 
+async function getUserNameById(id) {
+    const user = await UserModel.findById(id)
+    return user.username
+}
+
+async function getRecipientsNamesByIds(ids) {
+    var dests = []
+    for (const id of ids) {
+        dests.push(await getUserNameById(new ObjectId(id)))
+    }
+    return dests
+}
+
+
 const messageController = {
 
     create: async (req, res) => {
@@ -71,12 +85,23 @@ const messageController = {
 
             const messages = await MessageModel.find({ author: author_id })
 
+            const updatedMessages = [];
+            let new_message = {};
+
             if (!messages) {
                 res.status(404).json({ msg: "Nenhuma mensagem encontrada" })
                 return
             }
 
-            res.json(messages)
+            for (const message of messages) {
+                const id = new ObjectId(message.author);
+                new_message = message.toObject();
+                new_message.author = await getUserNameById(id);
+                new_message.recipients = await getRecipientsNamesByIds(message.recipients);
+                updatedMessages.push(new_message);
+            }
+
+            res.json(updatedMessages)
         } catch (error) {
             console.log(`ERRO: ${error}`)   
             res.status(500).json({ msg: "Ocorreu um erro ao buscar as mensagens" })
@@ -87,12 +112,23 @@ const messageController = {
         try {
             const messages = await MessageModel.find({ recipients: req.params.id })
 
+            const updatedMessages = [];
+            let new_message = {};
+
             if (!messages || messages.length === 0) {
                 res.status(404).json({ msg: "Nenhuma mensagem encontrada" })
                 return
             }
 
-            res.json(messages)
+            for (const message of messages) {
+                const id = new ObjectId(message.author);
+                new_message = message.toObject();
+                new_message.author = await getUserNameById(id);
+                new_message.recipients = await getRecipientsNamesByIds(message.recipients);
+                updatedMessages.push(new_message);
+            }
+
+            res.json(updatedMessages)
         } catch (error) {
             console.log(`ERRO: ${error}`)   
             res.status(500).json({ msg: "Ocorreu um erro ao buscar as mensagens" })

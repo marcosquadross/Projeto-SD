@@ -12,6 +12,8 @@ export function LogInFunc(data, toast, navigate) {
           username: response.data.user.username,
           telephone: response.data.user.telephone,
           token: response.data.token,
+          password: data.password,
+          name: response.data.user.name, 
         };
 
         localStorage.setItem("user_data", JSON.stringify(user_data));
@@ -69,41 +71,74 @@ export function LogUpFunc(data, toast, navigate) {
     });
 }
 
-export function UpdateUser(data, toast) {
-}
-
-export function DeleteUser(data, toast) {
-}
-
-export function SendEmail(data, toast) {
-
+export function UpdateUser(user_id, data, toast, onClose) {
   axios
-    .post(address + "/message", data)
+    .put(address + "/user/" + user_id, data)
     .then((response) => {
-      if (response.status == 201) {
+      if (response.status == 200) {
         toast({
           title: response.data.msg,
           status: "success",
           isClosable: true,
           duration: 3000,
         });
+        onClose();
       } else {
         toast({
           title: response.data.msg,
-          status: "error",
+          status: response.status == 404 ? "info" : "error",
           isClosable: true,
           duration: 3000,
         });
       }
     })
+    .catch((error) => {
+      console.log(error);
+    });
+}
 
+export function DeleteUser(data, toast) {}
+
+export function SendEmail(data, toast) {
+  axios.post(address + "/message", data).then((response) => {
+    if (response.status == 201) {
+      toast({
+        title: response.data.msg,
+        status: "success",
+        isClosable: true,
+        duration: 3000,
+      });
+    } else {
+      toast({
+        title: response.data.msg,
+        status: "error",
+        isClosable: true,
+        duration: 3000,
+      });
+    }
+  });
 }
 
 export function ReplyEmail(data, toast) {}
 
 export function GetSentEmails(user_id, toast) {
+  return axios.get(address + "/message/author/" + user_id).then((response) => {
+    if (response.status == 404 || response.status == 500) {
+      toast({
+        title: response.data.msg,
+        status: response.status == 404 ? "info" : "error",
+        isClosable: true,
+        duration: 3000,
+      });
+    } else {
+      return response.data;
+    }
+  });
+}
+
+export function GetReceivedEmails(user_id, toast) {
   return axios
-    .get(address + "/message/author/" + user_id) 
+    .get(address + "/message/recipient/" + user_id)
     .then((response) => {
       if (response.status == 404 || response.status == 500) {
         toast({
@@ -113,12 +148,27 @@ export function GetSentEmails(user_id, toast) {
           duration: 3000,
         });
       } else {
-        console.log("Deu certo os emails enviados", response.data);
-        // console.log(response.data);
         return response.data;
       }
-    })
- 
+    });
 }
 
-export function GetReceivedEmails(data, toast) {}
+export function DeleteEmail(data, toast) {
+  axios.delete(address + "/message/" + data.id).then((response) => {
+    if (response.status == 200) {
+      toast({
+        title: response.data.msg,
+        status: "success",
+        isClosable: true,
+        duration: 3000,
+      });
+    } else {
+      toast({
+        title: response.data.msg,
+        status: "error",
+        isClosable: true,
+        duration: 3000,
+      });
+    }
+  });
+}

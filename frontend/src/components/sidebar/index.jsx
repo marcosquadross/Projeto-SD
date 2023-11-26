@@ -14,6 +14,7 @@ import { Avatar, AvatarBadge, AvatarGroup } from '@chakra-ui/react'
 
 import CreateEmailGroup from "../../modals/createEmailGroup";
 import CreateEmail from "../../modals/createEmail";
+import ShowProfile from "../../modals/profile";
 
 import { useDisclosure } from "@chakra-ui/react";
 
@@ -22,7 +23,9 @@ import axios from "axios";
 export default function Sidebar(props) {
   const [grupos, setGrupos] = useState([]);
   const user = localStorage.getItem("cadastro_user");
-  const username = localStorage.getItem("cadastro_user");
+  const username = localStorage.getItem("cadastro_user"); 
+
+  const user_data = JSON.parse(localStorage.getItem("user_data"));
 
   const currentPath = window.location.pathname;
 
@@ -66,12 +69,19 @@ export default function Sidebar(props) {
     onClose: onModalCreateEmailGroupClose,
   } = useDisclosure();
 
+  /* Show Profile Modal */
+  const {
+    isOpen: isModalShowProfileOpen,
+    onOpen: onModalShowProfileOpen,
+    onClose: onModalShowProfileClose,
+  } = useDisclosure();
+
   const handleCreateEmailGroupClick = () => {
     onModalCreateEmailGroupOpen();
   };
 
-  const handleGoToProfile = () => {
-    navigate("/profile");
+  const handleProfile = () => {
+    onModalShowProfileOpen();
   };
 
   const handleGoToNotifications = () => {
@@ -94,15 +104,15 @@ export default function Sidebar(props) {
 
   return (
     <div className="sidebar">
-      <div className="container-logo-username" onClick={handleGoToProfile}>
+      <div className="container-logo-username" onClick={handleProfile}>
         {/* <img src="../../../guma.png" className="guma-logo" alt="GUMA Logo" /> */}
         <Avatar
-          name="Dan Abrahmov"
+          name={user_data.name}
           src="https://bit.ly/broken-link"
           className="guma-logo"
         />
         <p className="presentation">
-          Dan Abrahmov
+          {user_data.name}
         </p>
       </div>
 
@@ -161,6 +171,14 @@ export default function Sidebar(props) {
           onClose={onModalCreateEmailGroupClose}
           user={username}
         ></CreateEmailGroup>
+      </div>
+
+      <div>
+        <ShowProfile
+          isOpen={isModalShowProfileOpen}
+          onClose={onModalShowProfileClose}
+          user={user_data}
+        ></ShowProfile>
       </div>
 
       <div

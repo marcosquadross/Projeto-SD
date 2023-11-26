@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt'
 import { generateToken } from '../auth.js'
 import { User as UserModel } from "../models/User.js"
+import { ObjectId } from 'mongodb';
 
 const userController = {
 
@@ -38,13 +39,15 @@ const userController = {
 
     getById: async (req, res) => {
         try {
-            const user = await UserModel.findById(req.params.id)
+            const author_id = new ObjectId(req.params.id)
+            const user = await UserModel.findById(author_id)
+            // const user = await UserModel.findById(req.params.id)
 
             if (!user) {
                 res.status(404).json({ msg: "Usuário não encontrado." })
                 return
             }
-            
+
             res.json(user)
         } catch (error) {
             console.log(`ERRO: ${error}`)   

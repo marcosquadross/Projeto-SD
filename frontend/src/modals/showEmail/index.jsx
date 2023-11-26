@@ -25,6 +25,8 @@ export default function ShowEmail({
     onClose();
   };
 
+  const time = email.time.split("T")[1].split(":")[0] + ":" + email.time.split("T")[1].split(":")[1];
+
   return (
     <div>
       <Modal
@@ -35,15 +37,17 @@ export default function ShowEmail({
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader mb={0} className="modal_header">
-            {email.assunto}
-          </ModalHeader>
+          <ModalHeader mb={0} className="modal_header header">
+            <span>{email.title}</span>
+            <span>{time}</span>
+          </ModalHeader> 
+
           <ModalBody>
             <Text fontSize="md" fontWeight="bold" color={"black"} mb={2}>
-              {email.autor}
+              {email.author}
             </Text>
 
-            {email.conteudo}
+            {email.content}
           </ModalBody>
           <ModalFooter>
             <Button onClick={handleCloseEmail}>Fechar</Button>
