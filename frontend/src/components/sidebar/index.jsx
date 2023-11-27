@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./style.css";
 import { useNavigate } from "react-router-dom";
 
@@ -10,20 +10,22 @@ import { RiArrowDropDownLine, RiArrowDropUpLine } from "react-icons/ri";
 import { IoMdNotifications } from "react-icons/io";
 import { FaPencil } from "react-icons/fa6";
 
-import { Avatar, AvatarBadge, AvatarGroup } from '@chakra-ui/react'
+import { Avatar } from '@chakra-ui/react'
 
 import CreateEmailGroup from "../../modals/createEmailGroup";
 import CreateEmail from "../../modals/createEmail";
 import ShowProfile from "../../modals/profile";
 
-import { useDisclosure } from "@chakra-ui/react";
+import { GetUserGroups } from "../../services";
 
-import axios from "axios";
+import { useDisclosure, useToast } from "@chakra-ui/react";
 
 export default function Sidebar(props) {
   const [grupos, setGrupos] = useState([]);
   const user = localStorage.getItem("cadastro_user");
   const username = localStorage.getItem("cadastro_user"); 
+
+  const toast = useToast();
 
   const user_data = JSON.parse(localStorage.getItem("user_data"));
 
@@ -34,22 +36,14 @@ export default function Sidebar(props) {
   const navigate = useNavigate();
 
 
-  function getGroupsUser() {
-    axios({
-      method: "post",
-      url: "http://localhost:8000/grupos/grupos-usuario/",
-      data: {
-        username: user,
-      },
-    })
-      .then((response) => {
-        setGrupos(response.data);
-        setShowGroup(!showGroup);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const getGroupsUser = async () => {
+    const response = await GetUserGroups(user_data.user_id, toast);
+    setGrupos(response);
   }
+
+  useEffect(() => {
+    getGroupsUser();
+  }, []);
 
   /* Create Email Modal */
   const {

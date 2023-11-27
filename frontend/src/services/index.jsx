@@ -172,3 +172,58 @@ export function DeleteEmail(data, toast) {
     }
   });
 }
+
+export function CreateGroup(data, toast) {
+  axios.post(address + "/group", data).then((response) => {
+    if (response.status == 201) {
+      toast({
+        title: response.data.msg,
+        status: "success",
+        isClosable: true,
+        duration: 3000,
+      });
+    } else {
+      toast({
+        title: response.data.msg,
+        status: "error",
+        isClosable: true,
+        duration: 3000,
+      });
+    }
+  });
+} 
+
+export function GetUserGroups(user_id, toast) {
+  return axios.get(address + "/group/user/" + user_id).then((response) => {
+    if (response.status == 404 || response.status == 500) {
+      toast({
+        title: response.data.msg,
+        status: response.status == 404 ? "info" : "error",
+        isClosable: true,
+        duration: 3000,
+      });
+    } else {
+      return response.data;
+    }
+  });
+}
+
+export function LeaveGroup(data, toast) {
+  axios.put(address + "/group/leave").then((response) => {
+    if (response.status == 200) {
+      toast({
+        title: response.data.msg,
+        status: "success",
+        isClosable: true,
+        duration: 3000,
+      });
+    } else {
+      toast({
+        title: response.data.msg,
+        status: "error",
+        isClosable: true,
+        duration: 3000,
+      });
+    }
+  });
+}
