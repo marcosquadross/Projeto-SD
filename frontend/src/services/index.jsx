@@ -194,7 +194,7 @@ export function CreateGroup(data, toast) {
 } 
 
 export function GetUserGroups(user_id, toast) {
-  return axios.get(address + "/group/user/" + user_id).then((response) => {
+  return axios.get(address + "/groups/user/" + user_id).then((response) => {
     if (response.status == 404 || response.status == 500) {
       toast({
         title: response.data.msg,
@@ -203,7 +203,9 @@ export function GetUserGroups(user_id, toast) {
         duration: 3000,
       });
     } else {
-      return response.data;
+      // console.log("SERVER RESPONSE");
+      // console.log(response.data);
+      return response.data.response;
     }
   });
 }

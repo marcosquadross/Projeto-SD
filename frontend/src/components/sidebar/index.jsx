@@ -10,7 +10,7 @@ import { RiArrowDropDownLine, RiArrowDropUpLine } from "react-icons/ri";
 import { IoMdNotifications } from "react-icons/io";
 import { FaPencil } from "react-icons/fa6";
 
-import { Avatar } from '@chakra-ui/react'
+import { Avatar } from "@chakra-ui/react";
 
 import CreateEmailGroup from "../../modals/createEmailGroup";
 import CreateEmail from "../../modals/createEmail";
@@ -23,7 +23,7 @@ import { useDisclosure, useToast } from "@chakra-ui/react";
 export default function Sidebar(props) {
   const [grupos, setGrupos] = useState([]);
   const user = localStorage.getItem("cadastro_user");
-  const username = localStorage.getItem("cadastro_user"); 
+  const username = localStorage.getItem("cadastro_user");
 
   const toast = useToast();
 
@@ -35,15 +35,15 @@ export default function Sidebar(props) {
 
   const navigate = useNavigate();
 
-
   const getGroupsUser = async () => {
     const response = await GetUserGroups(user_data.user_id, toast);
     setGrupos(response);
-  }
+    setShowGroup(!showGroup);
+  };
 
-  useEffect(() => {
-    getGroupsUser();
-  }, []);
+  // useEffect(() => {
+  //   getGroupsUser();
+  // }, []);
 
   /* Create Email Modal */
   const {
@@ -96,6 +96,10 @@ export default function Sidebar(props) {
     navigate("/");
   };
 
+  const handleSendToGroup = () => {
+    onModalCreateEmailOpen()
+  }
+
   return (
     <div className="sidebar">
       <div className="container-logo-username" onClick={handleProfile}>
@@ -105,9 +109,7 @@ export default function Sidebar(props) {
           src="https://bit.ly/broken-link"
           className="guma-logo"
         />
-        <p className="presentation">
-          {user_data.name}
-        </p>
+        <p className="presentation">{user_data.name}</p>
       </div>
 
       <div className="subtitle-sidebar">Email</div>
@@ -142,6 +144,7 @@ export default function Sidebar(props) {
       <div className="flex" onClick={handleCreateEmailGroupClick}>
         <Icon as={AiOutlineUsergroupAdd} w={6} h={6} /> Novo Grupo
       </div>
+
       <div className="flex" onClick={getGroupsUser}>
         <Icon as={MdGroups} w={6} h={6} /> Grupos
         {showGroup == true ? (
@@ -150,6 +153,14 @@ export default function Sidebar(props) {
           <Icon as={RiArrowDropDownLine} w={7} h={7} />
         )}
       </div>
+
+      {showGroup && grupos.length !== 0
+        ? grupos.map((grupo, key) => (
+            <div className="flex" onClick={handleSendToGroup}>
+              <Icon as={FaPencil} w={4} h={4} /> {grupo.name} 
+            </div>
+          ))
+        : null}
 
       <div>
         <CreateEmail

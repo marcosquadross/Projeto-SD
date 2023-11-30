@@ -25,12 +25,7 @@ const messageSchema = new Schema({
     },
     files: {
         type: [fileSchema]
-    },    
-    isRead: {
-        type: Boolean,
-        required: true,
-    },
-    
+    }, 
 },
     { timestamps: true }
 )

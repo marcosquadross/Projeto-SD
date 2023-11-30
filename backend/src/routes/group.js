@@ -9,3 +9,5 @@ router.route('/group/:id').get((req, res) => groupController.getGroupById(req, r
 router.route('/group/:id').put((req, res) => groupController.update(req, res));
 router.route('/group/:id').delete((req, res) => groupController.delete(req, res));
 router.route('/group/leave/').put((req, res) => groupController.leaveGroup(req, res));
+
+export { router };

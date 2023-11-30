@@ -1,5 +1,5 @@
 import { Group } from '../models/Group.js'
-import { User } from '../models/User.js'
+import { User as UserModel } from '../models/User.js'
 import { ObjectId } from 'mongodb'
 
 async function getUserIdByName(name) {
@@ -32,8 +32,6 @@ const groupController = {
             const response = await Group.create(group)
             res.status(201).json({response, msg: "Grupo criado com sucesso!"})
         } catch (error) {
-            console.log(`ERRO: ${error}`)
-            console.log(error)
             res.status(500).json({msg: "Erro ao criar grupo"})
         }
     },
@@ -41,10 +39,13 @@ const groupController = {
     getUserGroups : async (req, res) => {
         try {
             const response = await Group.find({members: req.params.id})
+            // const groupsInfoArray = response.map(group => ({
+            //     groupId: group._id,
+            //     groupName: group.name,
+            //     members: group.members,
+            // }));
             res.status(200).json({response})
         } catch (error) {
-            console.log(`ERRO: ${error}`)
-            console.log(error)
             res.status(500).json({msg: "Erro ao buscar grupos"})
         }
     },
