@@ -15,6 +15,7 @@ import { Avatar } from "@chakra-ui/react";
 import CreateEmailGroup from "../../modals/createEmailGroup";
 import CreateEmail from "../../modals/createEmail";
 import ShowProfile from "../../modals/profile";
+import SendEmailToGroup from "../../modals/sendEmailToGroup";
 
 import { GetUserGroups } from "../../services";
 
@@ -22,6 +23,7 @@ import { useDisclosure, useToast } from "@chakra-ui/react";
 
 export default function Sidebar(props) {
   const [grupos, setGrupos] = useState([]);
+  const [groupInfos, setGroupInfos] = useState({});
   const user = localStorage.getItem("cadastro_user");
   const username = localStorage.getItem("cadastro_user");
 
@@ -70,6 +72,12 @@ export default function Sidebar(props) {
     onClose: onModalShowProfileClose,
   } = useDisclosure();
 
+  const {
+    isOpen: isModalSendEmailToGroupOpen,
+    onOpen: onModalSendEmailToGroupOpen,
+    onClose: onModalSendEmailToGroupClose,
+  } = useDisclosure();
+
   const handleCreateEmailGroupClick = () => {
     onModalCreateEmailGroupOpen();
   };
@@ -96,8 +104,10 @@ export default function Sidebar(props) {
     navigate("/");
   };
 
-  const handleSendToGroup = () => {
-    onModalCreateEmailOpen()
+  const handleSendToGroup = (grupo) => {
+    console.log("grupo: ", grupo);
+    onModalSendEmailToGroupOpen();
+    setGroupInfos(grupo);
   }
 
   return (
@@ -156,7 +166,7 @@ export default function Sidebar(props) {
 
       {showGroup && grupos.length !== 0
         ? grupos.map((grupo, key) => (
-            <div className="flex" onClick={handleSendToGroup}>
+            <div className="flex" onClick={() => handleSendToGroup(grupo)}>
               <Icon as={FaPencil} w={4} h={4} /> {grupo.name} 
             </div>
           ))
@@ -184,6 +194,15 @@ export default function Sidebar(props) {
           onClose={onModalShowProfileClose}
           user={user_data}
         ></ShowProfile>
+      </div>
+
+      <div>
+        <SendEmailToGroup
+          isOpen={isModalSendEmailToGroupOpen}
+          onClose={onModalSendEmailToGroupClose}
+          isReply={false}
+          group={groupInfos}
+        ></SendEmailToGroup>
       </div>
 
       <div

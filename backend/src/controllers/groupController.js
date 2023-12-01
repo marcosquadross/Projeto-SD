@@ -39,11 +39,6 @@ const groupController = {
     getUserGroups : async (req, res) => {
         try {
             const response = await Group.find({members: req.params.id})
-            // const groupsInfoArray = response.map(group => ({
-            //     groupId: group._id,
-            //     groupName: group.name,
-            //     members: group.members,
-            // }));
             res.status(200).json({response})
         } catch (error) {
             res.status(500).json({msg: "Erro ao buscar grupos"})
