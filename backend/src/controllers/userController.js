@@ -1,132 +1,131 @@
+import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcrypt'
-import { generateToken } from '../auth.js'
-import { User as UserModel } from "../models/User.js"
-import { ObjectId } from 'mongodb';
+const prisma = new PrismaClient()
 
-const userController = {
+export default {
 
-    create: async (req, res) => {
+    async createUser(req, res) {
+
         try {
+            const { username, name, phone, password, isEnable } = req.body
 
-            const salt = bcrypt.genSaltSync(12)
-            const passwordHash = bcrypt.hashSync(req.body.password, salt)
-            
-            const user = {
-                username: req.body.username,
-                name: req.body.name,
-                telephone: req.body.telephone,
-                password: passwordHash,
+            // validação
+            let user = await prisma.user.findUnique({ where: { username } })
+
+            if (user) {
+                return res.json({ error: "Já existe um usuário com esse username!" })
             }
 
-            const response = await UserModel.create(user)
-            res.status(201).json({response, msg: "Usuário criado com sucesso!"})  
+            const salt = bcrypt.genSaltSync(10)
+            const hashedPassword = bcrypt.hashSync(password, salt)
 
-        } catch (error) {
-            console.log(`ERRO: ${error}`)   
-            res.status(500).json({ msg: "Ocorreu um erro ao criar o usuário." })
+            user = await prisma.user.create({
+                data: {
+                    name,
+                    username,
+                    phone,
+                    password: hashedPassword,
+                    isEnable
+                },
+            })
+
+            return res.json(user)
+        } catch (error) { 
+            console.log(`Erro: ${error}`)
+            return res.json({ error })
         }
     },
 
-    getAll: async (req, res) => {
+    async findAllUsers(req, res) {
         try {
-            const users = await UserModel.find()
-            res.json(users)
+            const users = await prisma.user.findMany({
+                select: {
+                    name: true,
+                    createdAt: true
+                }
+            })
+            return res.json(users)
         } catch (error) {
-            console.log(`ERRO: ${error}`)   
-            res.status(500).json({ msg: "Ocorreu um erro ao buscar os usuários." })
+            console.log(`Erro: ${error}`)
+            return res.json({ error })
         }
     },
 
-    getById: async (req, res) => {
+    async findUser(req, res) {
         try {
-            const author_id = new ObjectId(req.params.id)
-            const user = await UserModel.findById(author_id)
-            // const user = await UserModel.findById(req.params.id)
+            const { id } = req.params
 
-            if (!user) {
-                res.status(404).json({ msg: "Usuário não encontrado." })
-                return
-            }
+            const user = await prisma.user.findUnique({ where: { id: Number(id) } })
 
-            res.json(user)
+            if (!user) return res.json({ error: "Usuário não cadastrado" })
+
+            return res.json(user)
         } catch (error) {
-            console.log(`ERRO: ${error}`)   
-            res.status(500).json({ msg: "Ocorreu um erro ao buscar o usuário." })
+            console.log(`Erro: ${error}`)
+            return res.json({ error })
         }
     },
 
-    delete: async (req, res) => {
+    async updateUser(req, res) {
         try {
-            const user = await UserModel.findByIdAndDelete(req.params.id)
+            const { id } = req.params
+            const { username, name, phone, password, isEnable } = req.body
 
-            if (!user) {
-                res.status(404).json({ msg: "Usuário não encontrado." })
-                return
-            }
-            
-            res.status(200).json({ user, msg: "Usuário deletado com sucesso!" })
+            let user = await prisma.user.findUnique({ where: { id: Number(id) } })
+
+            if (!user) return res.json({ error: "Usuário não cadastrado" })
+
+            const salt = bcrypt.genSaltSync(10)
+            const hashedPassword = bcrypt.hashSync(password, salt)
+
+            user = await prisma.user.update({
+                where: { id: Number(id) },
+                data: { username, name, phone, password: hashedPassword, isEnable }
+            })
+
+            return res.json(user)
         } catch (error) {
-            console.log(`ERRO: ${error}`)   
-            res.status(500).json({ msg: "Ocorreu um erro ao deletar o usuário." })
+            console.log(`Erro: ${error}`)
+            return res.json({ error })
         }
     },
 
-    update: async (req, res) => {
+    async deleteUser(req, res) {
         try {
-            const salt = bcrypt.genSaltSync(12)
-            const passwordHash = bcrypt.hashSync(req.body.password, salt)
+            const { id } = req.params
 
-            const user = {
-                username: req.body.username,
-                name: req.body.name,
-                telephone: req.body.telephone,
-                password: passwordHash,
-            }
+            const user = await prisma.user.findUnique({ where: { id: Number(id) } })
 
-            const userUpdated = await UserModel.findByIdAndUpdate(req.params.id, user) 
-            
-            if (!userUpdated) {
-                res.status(404).json({ msg: "Usuário não encontrado." })
-                return
-            }
+            if (!user) return res.json({ error: "Usuário não cadastrado" })
 
-            res.status(200).json({ user, msg: "Usuário atualizado com sucesso!" })
+            await prisma.user.delete({ where: { id: Number(id) } })
+
+            return res.json({ mensage: "Usuário Deletado" })
+
         } catch (error) {
-            console.log(`ERRO: ${error}`)  
-            console.log(error) 
-            res.status(500).json({ msg: "Ocorreu um erro ao atualizar o usuário." })
+            console.log(`Erro: ${error}`)
+            return res.json({ error })
         }
     },
 
-    login: async (req, res) => {
+    async login(req, res) {
         try {
             const { username, password } = req.body
 
-            const user = await UserModel.findOne({ username })
+            const user = await prisma.user.findUnique({ where: { username } })
 
-            console.log(user)
+            if (!user) return res.json({ error: "Usuário não cadastrado" })
 
-            if (!user) {
-                res.status(404).json({ msg: "Usuário não encontrado." })
-                return
-            }
+            const isPasswordValid = bcrypt.compareSync(password, user.password)
 
-            const isValidPassword = bcrypt.compareSync(password, user.password)
+            if (!isPasswordValid) return res.json({ error: "Senha inválida" })
 
-            if (!isValidPassword) {
-                res.status(403).json({ msg: "Senha inválida." })
-                return
-            }
-
-            const token = generateToken({ id: user._id, username: user.username })
-
-            res.status(200).json({ user, token })
+            return res.status(200).json({ mensage: "Login realizado com sucesso" })
+    
         } catch (error) {
-            console.log(`ERRO: ${error}`)   
-            res.status(500).json({ msg: "Ocorreu um erro ao fazer o login." })
+            console.log(`Erro: ${error}`)
+            return res.status(500).json({ mensage: "Erro interno" })
         }
-    },
+
+    }
 }
-
-export { userController }
-

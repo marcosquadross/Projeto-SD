@@ -1,155 +1,108 @@
-import { Message as MessageModel } from "../models/Message.js"
-import { User as UserModel } from "../models/User.js"
-import { ObjectId } from 'mongodb';
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
 
-async function getUserIdByName(name) {
-    const user = await UserModel.findOne({ username: name })
-
-    if (user){
-        return user._id
-    } else {
-        throw new Error(`Usuário user ${name} não encontrado.`);
-    }
-}
-
-async function getUsersIdByName(names) {
-    var users = []
-    for (const name of names) {
-        users.push(await getUserIdByName(name))
-    }
-    return users
-}
-
-async function getUserNameById(id) {
-    const user = await UserModel.findById(id)
-    return user.username
-}
-
-async function getRecipientsNamesByIds(ids) {
-    var dests = []
-    for (const id of ids) {
-        dests.push(await getUserNameById(new ObjectId(id)))
-    }
-    return dests
-}
-
-
-const messageController = {
-
-    create: async (req, res) => {
-        
+export default {
+    async createMessage(req, res) {
         try {
-            
-            const dest = await getUsersIdByName(req.body.recipients)
-            const author = new ObjectId(req.body.author)
+            const { title, authorId, receivers, content } = req.body
 
-            const message = {
-                title: req.body.title,
-                author: author,
-                content: req.body.content,
-                time: req.body.time,
-                recipients: dest,
-                files: req.body.files,
+            // Verificar se o autor existe
+            const authorExists = await prisma.user.findUnique({
+                where: { id: authorId },
+            })
+
+            if (!authorExists) {
+                return res.json({ error: "Autor não encontrado" })
             }
 
-            const response = await MessageModel.create(message)
-            res.status(201).json({response, msg: "Mensagem criada com sucesso!"})  
-            
+            // Criar a mensagem
+            const message = await prisma.message.create({
+                data: {
+                    title,
+                    authorId,
+                    content,
+                    receivers: {
+                        connect: receivers.map((userId) => ({ id: userId })),
+                    },
+                },
+            })
+
+            return res.json(message)
         } catch (error) {
-            console.log(`ERRO: ${error}`)   
-            console.log(error)
-            res.status(500).json({ msg: "Ocorreu um erro ao criar mensagem." })
+            return res.json({ error })
         }
     },
 
-    getById: async (req, res) => {
+    async findAllMessages(req, res) {
         try {
-            const message = await MessageModel.findById(req.params.id)
-
-            if (!message) {
-                res.status(404).json({ msg: "Mensagem não encontrado." })
-                return
-            }
-            
-            res.json(message)
+            const messages = await prisma.message.findMany({
+                select: {
+                    title: true,
+                    author: true,
+                    receivers: true,
+                },
+            })
+            return res.json(messages)
         } catch (error) {
-            console.log(`ERRO: ${error}`)   
-            res.status(500).json({ msg: "Ocorreu um erro ao buscar mensagem." })
+            return res.json({ error })
         }
     },
 
-    getByAuthor: async (req, res) => {
+    async findMessage(req, res) {
         try {
+            const { id } = req.params
 
-            const author_id = new ObjectId(req.params.id)
+            const message = await prisma.message.findUnique({ where: { id: Number(id) }, select: { title: true, author: true, receivers: true } })
 
-            const messages = await MessageModel.find({ author: author_id })
+            if (!message) return res.json({ error: "Mensagem não encontrada" })
 
-            const updatedMessages = [];
-            let new_message = {};
-
-            if (!messages) {
-                res.status(404).json({ msg: "Nenhuma mensagem encontrada" })
-                return
-            }
-
-            for (const message of messages) {
-                const id = new ObjectId(message.author);
-                new_message = message.toObject();
-                new_message.author = await getUserNameById(id);
-                new_message.recipients = await getRecipientsNamesByIds(message.recipients);
-                updatedMessages.push(new_message);
-            }
-
-            res.json(updatedMessages)
+            return res.json(message)
         } catch (error) {
-            console.log(`ERRO: ${error}`)   
-            res.status(500).json({ msg: "Ocorreu um erro ao buscar as mensagens" })
+            return res.json({ error })
         }
     },
 
-    getByRecipient: async (req, res) => {
+    async updateMessage(req, res) {
         try {
-            const messages = await MessageModel.find({ recipients: req.params.id })
+            const { id } = req.params
+            const { title, authorId, receivers, content } = req.body
 
-            const updatedMessages = [];
-            let new_message = {};
+            let message = await prisma.message.findUnique({ where: { id: Number(id) } })
 
-            if (!messages || messages.length === 0) {
-                res.status(404).json({ msg: "Nenhuma mensagem encontrada" })
-                return
-            }
+            if (!message) return res.json({ error: "Mensagem não encontrada" })
 
-            for (const message of messages) {
-                const id = new ObjectId(message.author);
-                new_message = message.toObject();
-                new_message.author = await getUserNameById(id);
-                new_message.recipients = await getRecipientsNamesByIds(message.recipients);
-                updatedMessages.push(new_message);
-            }
+            message = await prisma.message.update({
+                where: { id: Number(id) },
+                data: {
+                    title,
+                    authorId,
+                    content,
+                    receivers: {
+                        connect: receivers.map((userId) => ({ id: userId })),
+                    },
+                },
+            })
 
-            res.json(updatedMessages)
+            return res.json(message)
         } catch (error) {
-            console.log(`ERRO: ${error}`)   
-            res.status(500).json({ msg: "Ocorreu um erro ao buscar as mensagens" })
+            return res.json({ error })
         }
     },
 
-    delete: async (req, res) => {
+    async deleteMessage(req, res) {
         try {
-            const message = await MessageModel.findByIdAndDelete(req.params.id)
+            const { id } = req.params
 
-            if (!message) {
-                res.status(404).json({ msg: "Mensagem não encontrada." })
-                return
-            }
-            
-            res.status(200).json({ message, msg: "Mensagem deletada com sucesso!" })
+            const message = await prisma.message.delete({
+                where: { id: Number(id) },
+            })
+
+            return res.json(message)
         } catch (error) {
-            console.log(`ERRO: ${error}`)   
-            res.status(500).json({ msg: "Ocorreu um erro ao deletar mensagem." })
+            return res.json({ error })
         }
     },
+
+    
+
 }
-
-export { messageController }
