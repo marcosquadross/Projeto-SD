@@ -19,6 +19,7 @@ model User {
   isEnable        Boolean    @default(false)
   messagesSent    Message[]  @relation("sentMessages")
   messagesReceived Message[]  @relation("receivedMessages")
+  groups          Group[]
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
 }
@@ -30,6 +31,14 @@ model Message {
   authorId   Int
   receivers  User[]    @relation("receivedMessages")
   content    String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model Group {
+  id         Int       @id @default(autoincrement())
+  name       String
+  users      User[]
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
 }

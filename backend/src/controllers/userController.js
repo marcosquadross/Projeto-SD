@@ -1,15 +1,16 @@
 import { PrismaClient } from '@prisma/client'
+import { generateToken } from '../auth.js'
 import bcrypt from 'bcrypt'
 const prisma = new PrismaClient()
 
 export default {
 
-    async createUser(req, res) {
+    async create(req, res) {
 
         try {
             const { username, name, phone, password, isEnable } = req.body
 
-            // validação
+            
             let user = await prisma.user.findUnique({ where: { username } })
 
             if (user) {
@@ -29,47 +30,41 @@ export default {
                 },
             })
 
-            return res.json(user)
+            return res.status(200).json({user, msg: "Usuário criado com sucesso!"})
         } catch (error) { 
             console.log(`Erro: ${error}`)
-            return res.json({ error })
+            return res.status(500).json({msg: error })
         }
     },
 
-    async findAllUsers(req, res) {
+    async getAll(req, res) {
         try {
-            const users = await prisma.user.findMany({
-                select: {
-                    name: true,
-                    createdAt: true
-                }
-            })
+            const users = await prisma.user.findMany({})
             return res.json(users)
         } catch (error) {
             console.log(`Erro: ${error}`)
-            return res.json({ error })
+            return res.status(500).json({ msg: error })
         }
     },
 
-    async findUser(req, res) {
+    async getById(req, res) {
         try {
             const { id } = req.params
 
             const user = await prisma.user.findUnique({ where: { id: Number(id) } })
 
-            if (!user) return res.json({ error: "Usuário não cadastrado" })
+            if (!user) return res.status(404).json({ msg: "Usuário não cadastrado" })
 
             return res.json(user)
         } catch (error) {
             console.log(`Erro: ${error}`)
-            return res.json({ error })
+            return res.status(500).json({ msg: "Ocorreu um erro ao buscar o usuário." })
         }
     },
 
-    async updateUser(req, res) {
+    async update(req, res) {
         try {
             const { id } = req.params
-            const { username, name, phone, password, isEnable } = req.body
 
             let user = await prisma.user.findUnique({ where: { id: Number(id) } })
 
@@ -80,31 +75,37 @@ export default {
 
             user = await prisma.user.update({
                 where: { id: Number(id) },
-                data: { username, name, phone, password: hashedPassword, isEnable }
+                data: { 
+                    username: req.body.username, 
+                    name: req.body.name, 
+                    phone: req.body.phone, 
+                    password: hashedPassword, 
+                    isEnable: req.body.isEnable
+                }
             })
 
-            return res.json(user)
+            return res.status(200).json({user, msg: "Usuário atualizado com sucesso!"})
         } catch (error) {
             console.log(`Erro: ${error}`)
-            return res.json({ error })
+            return res.status(500).json({ msg: error })
         }
     },
 
-    async deleteUser(req, res) {
+    async delete(req, res) {
         try {
             const { id } = req.params
 
             const user = await prisma.user.findUnique({ where: { id: Number(id) } })
 
-            if (!user) return res.json({ error: "Usuário não cadastrado" })
+            if (!user) return res.status(404).json({ msg: "Usuário não cadastrado" })
 
-            await prisma.user.delete({ where: { id: Number(id) } })
+            user = await prisma.user.delete({ where: { id: Number(id) } })
 
-            return res.json({ mensage: "Usuário Deletado" })
+            res.status(200).json({ user, msg: "Usuário deletado com sucesso!" })
 
         } catch (error) {
             console.log(`Erro: ${error}`)
-            return res.json({ error })
+            return res.status(500).json({ msg: error })
         }
     },
 
@@ -114,17 +115,19 @@ export default {
 
             const user = await prisma.user.findUnique({ where: { username } })
 
-            if (!user) return res.json({ error: "Usuário não cadastrado" })
+            if (!user) return res.status(404).json({ msg: "Usuário não encontrado." })
 
             const isPasswordValid = bcrypt.compareSync(password, user.password)
 
             if (!isPasswordValid) return res.json({ error: "Senha inválida" })
 
-            return res.status(200).json({ mensage: "Login realizado com sucesso" })
-    
+            const token = generateToken({ id: user.id, username: user.username })
+
+            res.status(200).json({ user, token })
+            
         } catch (error) {
             console.log(`Erro: ${error}`)
-            return res.status(500).json({ mensage: "Erro interno" })
+            return res.status(500).json({ msg: "Ocorreu um erro ao fazer o login." })
         }
 
     }
