@@ -30,12 +30,11 @@ const Routering = createBrowserRouter([
 
   {
     path: "/home",
-    element: (
-      // <Home/>,
-      <PrivateRoute>
-        <Home/>
-      </PrivateRoute>
-    ),
+    element: 
+      <Home/>,
+      // <PrivateRoute>
+      //   <Home/>
+      // </PrivateRoute>
   },
 
   {

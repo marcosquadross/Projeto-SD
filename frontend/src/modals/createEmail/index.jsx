@@ -15,8 +15,6 @@ import {
   Input,
 } from "@chakra-ui/react";
 
-import getCurentDate from "../../functions/getCurrentDate";
-
 import { SendEmail } from "../../services";
 
 export default function CreateEmail({ isOpen, onClose, initialRef, finalRef, isReply, email}) {
@@ -40,21 +38,23 @@ export default function CreateEmail({ isOpen, onClose, initialRef, finalRef, isR
 
     isReply != true ? email_data = {
       title: assunto,
-      author: user_data.user_id,
+      authorId: user_data.user_id,
+      receivers: dest,
       content,
-      time: new Date(),
-      recipients: dest,
-      files: files != null ? files : []
+      // time: new Date(),
+      // files: files != null ? files : []
     } : email_data = {
       title: "Re: " + email.title,
-      author: user_data.user_id,
+      authorId: user_data.user_id,
+      receivers: [email.author],
       content,
-      time: new Date(),
-      recipients: [email.author],
-      files: files != null ? files : []
+      // time: new Date(),
+      // files: files != null ? files : []
     };
 
-    await SendEmail(email_data, toast, onClose);
+    await SendEmail(email_data, toast);
+
+    onClose();
 
     }
 

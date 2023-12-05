@@ -44,7 +44,7 @@ export default function LogUp() {
         .nonempty('Este campo é obrigatório')
         .min(6, 'Mínimo de 6 caracteres'),
 
-      telephone: z.string()
+      phone: z.string()
         .nonempty('Este campo é obrigatório')
         .min(10, 'Mínimo de 10 caracteres')
         .max(11, 'Máximo de 11 caracteres')
@@ -185,20 +185,20 @@ export default function LogUp() {
 
         <div>
             
-            <label style={{ color: '#D5DDDF' }} htmlFor="telephone">Telefone</label>
+            <label style={{ color: '#D5DDDF' }} htmlFor="phone">Telefone</label>
             <br></br>
   
             <Input
               type="text"
               style={{ color: '#D5DDDF' }}
-              id='telephone'
-              name='telephone'
-              {...register('telephone')}
+              id='phone'
+              name='phone'
+              {...register('phone')}
               htmlSize={27}
               width='auto'
             />
   
-            {errors.telephone && <span className='error'>{errors.telephone.message} </span>}
+            {errors.phone && <span className='error'>{errors.phone.message} </span>}
           
         </div>
 

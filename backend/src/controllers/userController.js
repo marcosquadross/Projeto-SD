@@ -7,13 +7,13 @@ export default {
     async createUser(req, res) {
 
         try {
-            const { username, name, phone, password, isEnable } = req.body
+            const { username, name, phone, password } = req.body
 
             // validação
             let user = await prisma.user.findUnique({ where: { username } })
 
             if (user) {
-                return res.json({ error: "Já existe um usuário com esse username!" })
+                return res.status(409).send()
             }
 
             const salt = bcrypt.genSaltSync(10)
@@ -25,11 +25,11 @@ export default {
                     username,
                     phone,
                     password: hashedPassword,
-                    isEnable
+                    isEnable: false
                 },
             })
 
-            return res.json(user)
+            return res.status(201).json({user, msg: "Usuário criado com sucesso" })
         } catch (error) { 
             console.log(`Erro: ${error}`)
             return res.json({ error })
@@ -114,13 +114,13 @@ export default {
 
             const user = await prisma.user.findUnique({ where: { username } })
 
-            if (!user) return res.json({ error: "Usuário não cadastrado" })
+            if (!user) return res.json({ msg: "Usuário não cadastrado" })
 
             const isPasswordValid = bcrypt.compareSync(password, user.password)
 
-            if (!isPasswordValid) return res.json({ error: "Senha inválida" })
+            if (!isPasswordValid) return res.json({ msg: "Senha inválida" })
 
-            return res.status(200).json({ mensage: "Login realizado com sucesso" })
+            return res.status(200).json({ user, msg: "Login realizado com sucesso" })
     
         } catch (error) {
             console.log(`Erro: ${error}`)

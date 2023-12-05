@@ -7,17 +7,17 @@ export function LogInFunc(data, toast, navigate) {
     .post(address + "/user/login", data)
     .then((response) => {
       if (response.status == 200) {
+
         let user_data = {
-          user_id: response.data.user._id,
+          user_id: response.data.user.id,
           username: response.data.user.username,
-          telephone: response.data.user.telephone,
-          token: response.data.token,
+          telephone: response.data.user.phone,
           password: data.password,
           name: response.data.user.name, 
         };
 
         localStorage.setItem("user_data", JSON.stringify(user_data));
-        localStorage.setItem("token", response.data.token);
+        // localStorage.setItem("token", response.data.token);
         navigate("/home", { replace: true });
       } else {
         toast({
@@ -52,7 +52,7 @@ export function LogUpFunc(data, toast, navigate) {
         const statusCode = parseInt(error.response.status);
         if (statusCode === 409) {
           toast({
-            title: "Usuário ou email já cadastrados no sistema",
+            title: "Usuário já cadastrado no sistema",
             status: "error",
             isClosable: true,
             duration: 3000,
@@ -108,6 +108,13 @@ export function SendEmail(data, toast) {
         isClosable: true,
         duration: 3000,
       });
+    } else if (response.status == 404) {
+      toast({
+        title: response.data.msg,
+        status: "error",
+        isClosable: true,
+        duration: 3000,
+      });
     } else {
       toast({
         title: response.data.msg,
@@ -137,8 +144,9 @@ export function GetSentEmails(user_id, toast) {
 }
 
 export function GetReceivedEmails(user_id, toast) {
+
   return axios
-    .get(address + "/message/recipient/" + user_id)
+    .get(address + "/message/receiver/" + user_id)
     .then((response) => {
       if (response.status == 404 || response.status == 500) {
         toast({

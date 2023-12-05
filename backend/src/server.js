@@ -12,3 +12,5 @@ app.listen(3000, async () => {
   await prisma.$connect();
   console.log("Server listening on port 3000");
 });
+
+export default app;

@@ -1,13 +1,13 @@
 import cors from 'cors'
 import express from 'express'
-import conn from './src/db/conn.js'
-import { router as routes } from './src/routes/router.js'
+// import conn from './src/server.js'
+import { router as routes } from './src/routes/routes.js'
 
 const app = express()
 app.use(cors())
 app.use(express.json())
 
-conn()
+// conn()
 
 app.use("/api", routes)
 
