@@ -1,15 +1,15 @@
 import { Router } from 'express'
 
-import MessageController from '../controllers/MessageController.js'
+import messageController from '../controllers/messageController.js'
 
 const router = Router()
 
-router.post("/message", MessageController.createMessage)
-router.get("/messages", MessageController.findAllMessages)
-router.get("/message/:id", MessageController.findMessage)
-router.get("/message/author/:id", MessageController.findMessagesByAuthor)
-router.get("/message/receiver/:id", MessageController.findMessagesByReceiver)
-router.put("/message/:id", MessageController.updateMessage)
-router.delete("/message/:id", MessageController.deleteMessage)  
+router.post("/message", messageController.create)
+router.get("/messages", messageController.getAll)
+router.get("/message/:id", messageController.getById)
+router.get("/message/author/:id", messageController.getByAuthor)
+router.get("/message/receiver/:id", messageController.getByReceiver)
+router.put("/message/:id", messageController.update)
+router.delete("/message/:id", messageController.delete)  
 
 export { router }

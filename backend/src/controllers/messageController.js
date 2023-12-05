@@ -37,12 +37,11 @@ async function getRecipientsNamesByIds(users) {
 }
 
 export default {
-    async createMessage(req, res) {
+    async create(req, res) {
         try {
 
             const { title, authorId, receivers, content } = req.body
 
-            // Verificar se o autor existe
             const authorExists = await prisma.user.findUnique({
                 where: { id: authorId },
             })
@@ -57,7 +56,6 @@ export default {
                 return res.status(404).json({ msg: recs })
             }
 
-            // Criar a mensagem
             const message = await prisma.message.create({
                 data: {
                     title,
@@ -75,22 +73,24 @@ export default {
         }
     },
 
-    async findAllMessages(req, res) {
+    async getAll(req, res) {
         try {
+            const { id } = req.params
+
             const messages = await prisma.message.findMany({
-                select: {
-                    title: true,
-                    author: true,
-                    receivers: true,
-                },
+                where: { authorId: Number(id) }
             })
+
+            if (!messages) return res.json({ error: "Mensagem não encontrada" })
+
             return res.json(messages)
         } catch (error) {
-            return res.json({ error })
+            console.log(`Erro: ${error}`)
+            return res.status(500).json({ msg: error })
         }
     },
 
-    async findMessage(req, res) {
+    async getById(req, res) {
         try {
             const { id } = req.params
 
@@ -100,11 +100,12 @@ export default {
 
             return res.json(message)
         } catch (error) {
-            return res.json({ error })
+            console.log(`Erro: ${error}`)
+            return res.status(500).json({ msg: error })
         }
     },
 
-    async findMessagesByAuthor(req, res) {
+    async getByAuthor(req, res) {
         try {
             const { id } = req.params
 
@@ -144,7 +145,7 @@ export default {
         }
     },
 
-    async findMessagesByReceiver(req, res) {
+    async getByReceiver(req, res) {
 
         try {
             const { id } = req.params
@@ -186,7 +187,7 @@ export default {
         }
     },
 
-    async updateMessage(req, res) {
+    async update(req, res) {
         try {
             const { id } = req.params
             const { title, authorId, receivers, content } = req.body
@@ -213,7 +214,7 @@ export default {
         }
     },
 
-    async deleteMessage(req, res) {
+    async delete(req, res) {
         try {
             const { id } = req.params
 
