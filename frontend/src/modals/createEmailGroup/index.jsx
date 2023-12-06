@@ -26,12 +26,12 @@ export default function CreateEmailGroup({ isOpen, onClose, initialRef, finalRef
 
   const handleCreateGroup = async () => {
 
-    // setGroupMembers(groupMembers + "," + user_data.username);
+    let groupMembersArray = groupMembers.split(",");
+    groupMembersArray.push(user_data.username);
 
     const emailGroup = {
         name: groupName,
-        // members: groupMembers.split(","),
-        members: (groupMembers + "," + user_data.username).split(",").filter(member => member.trim() !== ''),
+        members: groupMembersArray,
     };
 
     await CreateGroup(emailGroup, toast);

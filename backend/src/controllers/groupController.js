@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-async function getUsersIdsByUsers(users) {
+async function getUsersIdsByUsername(users) {
 
     let usersIds = []
 
@@ -24,9 +24,9 @@ async function getUsersIdsByUsers(users) {
 export default {
     async create(req, res) {
         try {
-            const { name, member } = req.body;
+            const { name, members } = req.body;
 
-            const groupMembers = await getUsersIdsByUsers(member);
+            const groupMembers = await getUsersIdsByUsername(members);
 
             const group = await prisma.group.create({
                 data: {
@@ -36,7 +36,7 @@ export default {
                     },
                 },
             });
-            
+
             return res.status(201).json({msg: "Grupo criado com sucesso"});
 
         } catch (error) {

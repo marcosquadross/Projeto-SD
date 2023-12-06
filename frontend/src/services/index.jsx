@@ -182,6 +182,9 @@ export function DeleteEmail(data, toast) {
 }
 
 export function CreateGroup(data, toast) {
+
+  console.log("finally here")
+
   axios.post(address + "/group", data).then((response) => {
     if (response.status == 201) {
       toast({
