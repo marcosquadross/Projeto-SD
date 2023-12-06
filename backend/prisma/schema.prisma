@@ -38,7 +38,7 @@ model Message {
 model Group {
   id         Int       @id @default(autoincrement())
   name       String
-  users      User[]
+  users      User[]   
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
 }

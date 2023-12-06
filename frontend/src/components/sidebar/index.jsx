@@ -39,6 +39,7 @@ export default function Sidebar(props) {
   const getGroupsUser = async () => {
     const response = await GetUserGroups(user_data.user_id, toast);
     setGrupos(response);
+    setShowGroup(!showGroup);
   }
 
   useEffect(() => {

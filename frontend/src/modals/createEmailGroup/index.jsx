@@ -13,37 +13,30 @@ import {
   Input,
 } from "@chakra-ui/react";
 
-import axios from "axios";
+import { CreateGroup } from "../../services";
+
 
 export default function CreateEmailGroup({ isOpen, onClose, initialRef, finalRef }) {
   const toast = useToast();
 
-  const [groupMembers, setGroupMembers] = useState([]);
+  const user_data = JSON.parse(localStorage.getItem("user_data"));
+
+  const [groupMembers, setGroupMembers] = useState("");
   const [groupName, setGroupName] = useState("");
 
   const handleCreateGroup = async () => {
+
+    // setGroupMembers(groupMembers + "," + user_data.username);
+
     const emailGroup = {
         name: groupName,
-        members: groupMembers,
+        // members: groupMembers.split(","),
+        members: (groupMembers + "," + user_data.username).split(",").filter(member => member.trim() !== ''),
     };
 
-    try {
-      const response = await axios.post("http://localhost:3001/email", email);
-      toast({
-        title: "Email enviado com sucesso!",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
-      onClose();
-    } catch (error) {
-      toast({
-        title: "Erro ao enviar email!",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    }
+    await CreateGroup(emailGroup, toast);
+    onClose();
+    
   };
 
   return (
@@ -57,7 +50,7 @@ export default function CreateEmailGroup({ isOpen, onClose, initialRef, finalRef
         <ModalOverlay />
         <ModalContent>
           <ModalHeader mb={0} className="modal_header">
-            Criar Email
+            Criar Grupo
           </ModalHeader>
           <ModalBody>
             <FormControl id="destinatarios" mb={4}>
