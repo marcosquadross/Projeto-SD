@@ -15,6 +15,8 @@ import { GoReply } from "react-icons/go";
 
 import { GetReceivedEmails } from "../../services";
 
+import handleEmailDate from "../../functions/handleEmailDate";
+
 import CreateEmail from "../../modals/createEmail";
 import ShowEmail from "../../modals/showEmail";
 
@@ -63,10 +65,10 @@ export default function Home() {
     onModalShowEmailOpen();
   };
 
-  const handleEmailDate = (email) => {
-    const date = email.time.split("T")[0].split("-")[2] + "/" + email.time.split("T")[0].split("-")[1] + "/" + email.time.split("T")[0].split("-")[0];
-    return date;
-  }
+  // const handleEmailDate = (email) => {
+  //   const date = email.time.split("T")[0].split("-")[2] + "/" + email.time.split("T")[0].split("-")[1] + "/" + email.time.split("T")[0].split("-")[0];
+  //   return date;
+  // }
 
 
 
@@ -90,7 +92,7 @@ export default function Home() {
           >
             <p>{email.title}</p>
             <p>{email.author}</p>
-            <p>{handleEmailDate(email)}</p>
+            <p>{handleEmailDate(email.time)}</p>
             <p>{email.recipients}</p>
             <div>
               <Icon

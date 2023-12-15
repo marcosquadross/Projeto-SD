@@ -43,10 +43,6 @@ export default function Sidebar(props) {
     setShowGroup(!showGroup);
   };
 
-  // useEffect(() => {
-  //   getGroupsUser();
-  // }, []);
-
   /* Create Email Modal */
   const {
     isOpen: isModalCreateEmailOpen,
@@ -104,8 +100,15 @@ export default function Sidebar(props) {
     navigate("/");
   };
 
+  const removeUserFromMembers = (group) => {
+    const username = user_data.username;
+    const members = group.members;
+    const newMembers = members.filter((member) => member !== username);
+    return newMembers;
+  };
+
   const handleSendToGroup = (grupo) => {
-    console.log("grupo: ", grupo);
+    grupo.members = removeUserFromMembers(grupo);
     onModalSendEmailToGroupOpen();
     setGroupInfos(grupo);
   }

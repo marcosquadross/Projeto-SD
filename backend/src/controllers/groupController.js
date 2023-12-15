@@ -64,9 +64,7 @@ const groupController = {
                 }
                 groups.push(group)
             }
-
-
-            console.log(groups)
+            
             res.status(200).json({groups})
         } catch (error) {
             res.status(500).json({msg: "Erro ao buscar grupos"})

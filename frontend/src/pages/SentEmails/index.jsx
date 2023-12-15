@@ -14,6 +14,8 @@ import {
 
 import { GoReply } from "react-icons/go";
 
+import handleEmailDate from "../../functions/handleEmailDate";
+
 
 import ShowEmail from "../../modals/showEmail";
 
@@ -67,7 +69,7 @@ export default function SentEmails() {
           >
             <p>{email.title}</p>
             <p>{email.author}</p>
-            <p>{email.time}</p>
+            <p>{handleEmailDate(email.time)}</p>
             <p>{email.recipients}</p>
             <div>
               <Icon

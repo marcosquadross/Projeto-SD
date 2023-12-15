@@ -193,6 +193,26 @@ export function CreateGroup(data, toast) {
   });
 } 
 
+export function sendEmailToGroup(data, toast) {
+  axios.post(address + "/message/group", data).then((response) => {
+    if (response.status == 201) {
+      toast({
+        title: response.data.msg,
+        status: "success",
+        isClosable: true,
+        duration: 3000,
+      });
+    } else {
+      toast({
+        title: response.data.msg,
+        status: "error",
+        isClosable: true,
+        duration: 3000,
+      });
+    }
+  });
+}
+
 export function GetUserGroups(user_id, toast) {
   return axios.get(address + "/groups/user/" + user_id).then((response) => {
     if (response.status == 404 || response.status == 500) {

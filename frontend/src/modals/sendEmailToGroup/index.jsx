@@ -14,7 +14,7 @@ import {
   Input,
 } from "@chakra-ui/react";
 
-import { SendEmail } from "../../services";
+import { sendEmailToGroup } from "../../services";
 
 export default function SendEmailToGroup({ isOpen, onClose, initialRef, finalRef, isReply, email, group}) {
   const toast = useToast();
@@ -31,37 +31,20 @@ export default function SendEmailToGroup({ isOpen, onClose, initialRef, finalRef
     let data;
     files != null ? data = packFiles(files) : data = "";
 
-    let dest = destinatarios.split(",");
-    console.log(dest);
-    dest = dest.map((d) => d.trim());
-    //remover valor do vetor de destinatarios que é o próprio usuário
-    dest = dest.filter((d) => d != user_data.username);
-    console.log(dest);
-
-
     let email_data = {};
 
-    isReply != true ? email_data = {
+    email_data = {
+      id: group.id,
       title: assunto,
       author: user_data.user_id,
       content,
       time: new Date(),
-      recipients: dest,
+      recipients: group.members,
       files: files != null ? files : []
-    } : email_data = {
-      title: "Re: " + email.title,
-      author: user_data.user_id,
-      content,
-      time: new Date(),
-      recipients: [email.author],
-      files: files != null ? files : []
-    };
+    }
 
-    console.log(email_data);
-
-    return
-
-    await SendEmail(email_data, toast, onClose);
+    await sendEmailToGroup(email_data, toast);
+    onClose();
 
     }
 
@@ -95,7 +78,6 @@ export default function SendEmailToGroup({ isOpen, onClose, initialRef, finalRef
         <ModalOverlay />
         <ModalContent>
           <ModalHeader mb={0} className="modal_header">
-            {/* {isReply != true ? "Novo Email" : "Responder Email"} */}
             {group.name}
           </ModalHeader>
           <ModalBody>
@@ -104,8 +86,6 @@ export default function SendEmailToGroup({ isOpen, onClose, initialRef, finalRef
               <Input
                 type="text"
                 placeholder="Destinatários"
-                onChange={isReply != true ? (e) => setDestinatarios(e.target.value) : (e) => setDestinatarios(email.author)}
-                // onChange={(e) => setDestinatarios(e.target.value)}
                 isReadOnly={true}
                 value={group.members}
               />
