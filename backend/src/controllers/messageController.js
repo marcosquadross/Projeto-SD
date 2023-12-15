@@ -1,11 +1,12 @@
 import { Message as MessageModel } from "../models/Message.js"
 import { User as UserModel } from "../models/User.js"
+import { Group } from "../models/Group.js";
 import { ObjectId } from 'mongodb';
 
 async function getUserIdByName(name) {
     const user = await UserModel.findOne({ username: name })
 
-    if (user){
+    if (user) {
         return user._id
     } else {
         throw new Error(`Usuário user ${name} não encontrado.`);
@@ -37,9 +38,9 @@ async function getRecipientsNamesByIds(ids) {
 const messageController = {
 
     create: async (req, res) => {
-        
+
         try {
-            
+
             const dest = await getUsersIdByName(req.body.recipients)
             const author = new ObjectId(req.body.author)
 
@@ -53,10 +54,10 @@ const messageController = {
             }
 
             const response = await MessageModel.create(message)
-            res.status(201).json({response, msg: "Mensagem criada com sucesso!"})  
-            
+            res.status(201).json({ response, msg: "Mensagem criada com sucesso!" })
+
         } catch (error) {
-            console.log(`ERRO: ${error}`)   
+            console.log(`ERRO: ${error}`)
             console.log(error)
             res.status(500).json({ msg: "Ocorreu um erro ao criar mensagem." })
         }
@@ -70,10 +71,10 @@ const messageController = {
                 res.status(404).json({ msg: "Mensagem não encontrado." })
                 return
             }
-            
+
             res.json(message)
         } catch (error) {
-            console.log(`ERRO: ${error}`)   
+            console.log(`ERRO: ${error}`)
             res.status(500).json({ msg: "Ocorreu um erro ao buscar mensagem." })
         }
     },
@@ -103,7 +104,7 @@ const messageController = {
 
             res.json(updatedMessages)
         } catch (error) {
-            console.log(`ERRO: ${error}`)   
+            console.log(`ERRO: ${error}`)
             res.status(500).json({ msg: "Ocorreu um erro ao buscar as mensagens" })
         }
     },
@@ -130,7 +131,7 @@ const messageController = {
 
             res.json(updatedMessages)
         } catch (error) {
-            console.log(`ERRO: ${error}`)   
+            console.log(`ERRO: ${error}`)
             res.status(500).json({ msg: "Ocorreu um erro ao buscar as mensagens" })
         }
     },
@@ -143,13 +144,46 @@ const messageController = {
                 res.status(404).json({ msg: "Mensagem não encontrada." })
                 return
             }
-            
+
             res.status(200).json({ message, msg: "Mensagem deletada com sucesso!" })
         } catch (error) {
-            console.log(`ERRO: ${error}`)   
+            console.log(`ERRO: ${error}`)
             res.status(500).json({ msg: "Ocorreu um erro ao deletar mensagem." })
         }
     },
+    
+    createGroupMessage: async (req, res) => {
+        try {
+            const group = await Group.findById(req.body.id)
+            if (!group) {
+                res.status(404).json({ msg: "Grupo não encontrado." })
+                return
+            }
+
+            const dests = group.members
+                .filter(memberId => memberId.toString() !== req.body.author)
+                .map(memberId => new ObjectId(memberId))
+
+            const author = new ObjectId(req.body.author)
+
+            const message = {
+                title: req.body.title,
+                author: author,
+                content: req.body.content,
+                time: req.body.time,
+                recipients: dests,
+                files: req.body.files,
+            }
+
+            const response = await MessageModel.create(message)
+            res.status(201).json({ response, msg: "Mensagem criada com sucesso!" })
+
+        } catch (error) {
+            console.log(`ERRO: ${error}`)
+            console.log(error)
+            res.status(500).json({ msg: "Ocorreu um erro ao criar mensagem." })
+        }
+    }
 }
 
 export { messageController }
