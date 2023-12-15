@@ -14,7 +14,6 @@ import {
 } from "@chakra-ui/react";
 
 import { CreateGroup } from "../../services";
-import { set } from "lodash";
 
 export default function CreateEmailGroup({ isOpen, onClose, initialRef, finalRef }) {
 
@@ -27,11 +26,14 @@ export default function CreateEmailGroup({ isOpen, onClose, initialRef, finalRef
 
   const handleCreateGroup = async () => {
 
-    setGroupMembers(groupMembers + "," + user_data.username);
+    let groupMembersArray = groupMembers.split(",").map((member) => member.trim());
+    groupMembersArray.push(user_data.username);
+
+    groupMembersArray = [...new Set(groupMembersArray)]; //remover duplicatas
 
     const emailGroup = {
         name: groupName,
-        members: groupMembers.split(",")
+        members: groupMembersArray,
     };
 
     await CreateGroup(emailGroup, toast);

@@ -20,6 +20,19 @@ async function checkIfUserExists (names){
     return users
 }
 
+async function getUserNameById(id) {
+    const user = await UserModel.findById(id)
+    return user.username
+}
+
+async function getRecipientsNamesByIds(ids) {
+    var dests = []
+    for (const id of ids) {
+        dests.push(await getUserNameById(new ObjectId(id)))
+    }
+    return dests
+}
+
 const groupController = {
     create : async (req, res) => {
         try {
@@ -39,7 +52,22 @@ const groupController = {
     getUserGroups : async (req, res) => {
         try {
             const response = await Group.find({members: req.params.id})
-            res.status(200).json({response})
+
+            let groups = []
+            let group = {}
+
+            for (const g of response) {
+                group = {
+                    id: g._id,
+                    name: g.name,
+                    members: await getRecipientsNamesByIds(g.members)
+                }
+                groups.push(group)
+            }
+
+
+            console.log(groups)
+            res.status(200).json({groups})
         } catch (error) {
             res.status(500).json({msg: "Erro ao buscar grupos"})
         }

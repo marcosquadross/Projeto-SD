@@ -203,9 +203,7 @@ export function GetUserGroups(user_id, toast) {
         duration: 3000,
       });
     } else {
-      // console.log("SERVER RESPONSE");
-      // console.log(response.data);
-      return response.data.response;
+      return response.data.groups;
     }
   });
 }

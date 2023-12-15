@@ -63,6 +63,13 @@ export default function Home() {
     onModalShowEmailOpen();
   };
 
+  const handleEmailDate = (email) => {
+    const date = email.time.split("T")[0].split("-")[2] + "/" + email.time.split("T")[0].split("-")[1] + "/" + email.time.split("T")[0].split("-")[0];
+    return date;
+  }
+
+
+
   return (
     <>
       <Sidebar user={username} />
@@ -83,7 +90,7 @@ export default function Home() {
           >
             <p>{email.title}</p>
             <p>{email.author}</p>
-            <p>{email.time}</p>
+            <p>{handleEmailDate(email)}</p>
             <p>{email.recipients}</p>
             <div>
               <Icon

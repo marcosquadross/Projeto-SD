@@ -26,6 +26,7 @@ export default function ShowEmail({
   };
 
   const time = email.time.split("T")[1].split(":")[0] + ":" + email.time.split("T")[1].split(":")[1];
+  const date = email.time.split("T")[0].split("-")[2] + "/" + email.time.split("T")[0].split("-")[1] + "/" + email.time.split("T")[0].split("-")[0];
 
   return (
     <div>
@@ -39,7 +40,7 @@ export default function ShowEmail({
         <ModalContent>
           <ModalHeader mb={0} className="modal_header header">
             <span>{email.title}</span>
-            <span>{time}</span>
+            <span>{date} - {time}</span>
           </ModalHeader> 
 
           <ModalBody>

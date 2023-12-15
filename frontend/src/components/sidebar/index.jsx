@@ -166,8 +166,8 @@ export default function Sidebar(props) {
 
       {showGroup && grupos.length !== 0
         ? grupos.map((grupo, key) => (
-            <div className="flex" onClick={() => handleSendToGroup(grupo)}>
-              <Icon as={FaPencil} w={4} h={4} /> {grupo.name} 
+          <div className="flex">
+              <Icon as={FaPencil} w={4} h={4} onClick={() => handleSendToGroup(grupo)}/> {grupo.name} 
             </div>
           ))
         : null}

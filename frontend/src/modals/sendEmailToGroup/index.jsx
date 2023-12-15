@@ -32,6 +32,12 @@ export default function SendEmailToGroup({ isOpen, onClose, initialRef, finalRef
     files != null ? data = packFiles(files) : data = "";
 
     let dest = destinatarios.split(",");
+    console.log(dest);
+    dest = dest.map((d) => d.trim());
+    //remover valor do vetor de destinatarios que é o próprio usuário
+    dest = dest.filter((d) => d != user_data.username);
+    console.log(dest);
+
 
     let email_data = {};
 
@@ -50,6 +56,10 @@ export default function SendEmailToGroup({ isOpen, onClose, initialRef, finalRef
       recipients: [email.author],
       files: files != null ? files : []
     };
+
+    console.log(email_data);
+
+    return
 
     await SendEmail(email_data, toast, onClose);
 
@@ -96,8 +106,8 @@ export default function SendEmailToGroup({ isOpen, onClose, initialRef, finalRef
                 placeholder="Destinatários"
                 onChange={isReply != true ? (e) => setDestinatarios(e.target.value) : (e) => setDestinatarios(email.author)}
                 // onChange={(e) => setDestinatarios(e.target.value)}
-                isReadOnly={isReply}
-                value={isReply != true ? destinatarios : email.author}
+                isReadOnly={true}
+                value={group.members}
               />
             </FormControl>
 
