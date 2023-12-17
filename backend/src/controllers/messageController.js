@@ -205,7 +205,6 @@ const messageController = {
       }
 
       console.log(req.body);
-      return;
 
       const dests = group.members
         .filter((memberId) => memberId.toString() !== req.body.author)
@@ -223,6 +222,22 @@ const messageController = {
       };
 
       const response = await MessageModel.create(message);
+
+      const ws_message = {
+        _id: response._id,
+        _v: response._v,
+        author: await getUserNameById(req.body.author),
+        content: req.body.content,
+        createdAt: response.createdAt,
+        files: req.body.files,
+        recipients: req.body.recipients,
+        time: req.body.time,
+        title: req.body.title,
+        updatedAt: response.updatedAt,
+      }
+
+      sendEmail(ws_message);
+      
       res.status(201).json({ response, msg: "Mensagem criada com sucesso!" });
     } catch (error) {
       console.log(`ERRO: ${error}`);
