@@ -2,6 +2,8 @@ import { Group } from '../models/Group.js'
 import { User as UserModel } from '../models/User.js'
 import { ObjectId } from 'mongodb'
 
+import { wss } from './messageController.js'
+
 async function getUserIdByName(name) {
     const user = await UserModel.findOne({ username: name })
 

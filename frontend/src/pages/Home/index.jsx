@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./style.css";
 import "../../main.css";
-// import SearchBar from "../../components/searchBar";
 
 import Sidebar from "../../components/sidebar";
 import { Icon, useDisclosure, useToast } from "@chakra-ui/react";
@@ -20,8 +19,9 @@ import handleEmailDate from "../../functions/handleEmailDate";
 import CreateEmail from "../../modals/createEmail";
 import ShowEmail from "../../modals/showEmail";
 
+import { set } from "lodash";
+
 export default function Home() {
-  // const username = localStorage.getItem("username");
   const user_data = JSON.parse(localStorage.getItem("user_data"));
   const username = user_data.username;
 
@@ -31,11 +31,35 @@ export default function Home() {
   const [receivedEmails, setReceivedEmails] = useState([]);
   const [isReply, setIsReply] = useState(false);
 
+  const ws = new WebSocket("ws://localhost:8080");
+
+  ws.addEventListener("open", (event) => {
+    console.log("Conexão aberta com o servidor");
+  });
+
+  // Evento disparado quando uma mensagem é recebida do servidor
+  ws.addEventListener("message", (event) => {
+    console.log(`Recebido do servidor: ${event.data}`);
+  });
+
+  // Função para enviar uma mensagem ao servidor
+  function enviarMensagem() {
+    ws.send("Estou no Home");
+  }
+
+  // Evento disparado quando a conexão é fechada
+  ws.addEventListener("close", (event) => {
+    console.log("Conexão fechada");
+  });
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await GetReceivedEmails(user_data.user_id, toast);
         setReceivedEmails(res);
+        console.log("Emails recebidos:");
+        console.log(receivedEmails);
+        enviarMensagem();
       } catch (error) {
         console.error("Erro ao obter os emails:", error);
       }
@@ -43,9 +67,10 @@ export default function Home() {
     fetchData();
   }, []);
 
+
   const handleReplyEmail = (email) => {
     setIsReply(true);
-    onModalCreateEmailOpen()
+    onModalCreateEmailOpen();
   };
 
   const {
@@ -64,13 +89,6 @@ export default function Home() {
     setSelectedEmail(email);
     onModalShowEmailOpen();
   };
-
-  // const handleEmailDate = (email) => {
-  //   const date = email.time.split("T")[0].split("-")[2] + "/" + email.time.split("T")[0].split("-")[1] + "/" + email.time.split("T")[0].split("-")[0];
-  //   return date;
-  // }
-
-
 
   return (
     <>
@@ -104,12 +122,12 @@ export default function Home() {
                 color="gray.500"
                 style={{ cursor: "pointer" }}
               />
-              <Icon 
-                as={IoTrashOutline} 
-                w={6} 
-                h={6} 
-                mr={10} 
-                color="gray.500" 
+              <Icon
+                as={IoTrashOutline}
+                w={6}
+                h={6}
+                mr={10}
+                color="gray.500"
                 style={{ cursor: "pointer" }}
               />
 

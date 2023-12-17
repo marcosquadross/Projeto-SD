@@ -16,7 +16,6 @@ import { GoReply } from "react-icons/go";
 
 import handleEmailDate from "../../functions/handleEmailDate";
 
-
 import ShowEmail from "../../modals/showEmail";
 
 export default function SentEmails() {
