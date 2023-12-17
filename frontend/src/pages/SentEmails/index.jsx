@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import "./style.css";
 import "../../main.css";
 
-import { GetSentEmails } from "../../services";
+import { GetSentEmails, DeleteEmail } from "../../services";
 
 import Sidebar from "../../components/sidebar";
 import { Icon, Button, useDisclosure, useToast } from "@chakra-ui/react";
@@ -84,7 +84,6 @@ export default function SentEmails() {
         {sentEmails?.map((email) => (
           <div
             className="gasto_information"
-            onClick={() => handleShowEmail(email)}
           >
             <p>{email.title}</p>
             <p>{email.author}</p>
@@ -98,6 +97,7 @@ export default function SentEmails() {
                 mr={10}
                 ml={7}
                 color="gray.500"
+                onClick={() => handleShowEmail(email)}
                 style={{ cursor: "pointer" }}
               />
               <Icon 
@@ -105,7 +105,8 @@ export default function SentEmails() {
                 w={6} 
                 h={6} 
                 mr={10} 
-                color="gray.500" 
+                color="gray.500"
+                onClick = {() => DeleteEmail(email._id, toast)} 
                 style={{ cursor: "pointer" }}
                 />
               <Icon

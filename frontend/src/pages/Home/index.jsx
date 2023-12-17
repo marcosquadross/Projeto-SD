@@ -12,7 +12,7 @@ import {
 
 import { GoReply } from "react-icons/go";
 
-import { GetReceivedEmails } from "../../services";
+import { GetReceivedEmails, DeleteEmail } from "../../services";
 
 import handleEmailDate from "../../functions/handleEmailDate";
 
@@ -133,7 +133,6 @@ export default function Home() {
         {receivedEmails.map((email) => (
           <div
             className="gasto_information"
-            onClick={() => handleShowEmail(email)}
           >
             <p>{email.title}</p>
             <p>{email.author}</p>
@@ -147,6 +146,7 @@ export default function Home() {
                 mr={10}
                 ml={7}
                 color="gray.500"
+                onClick={() => handleShowEmail(email)}
                 style={{ cursor: "pointer" }}
               />
               <Icon
@@ -155,6 +155,7 @@ export default function Home() {
                 h={6}
                 mr={10}
                 color="gray.500"
+                onClick={() => DeleteEmail(email._id, toast)}
                 style={{ cursor: "pointer" }}
               />
 
