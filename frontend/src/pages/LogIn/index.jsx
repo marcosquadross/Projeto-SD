@@ -61,9 +61,9 @@ export default function LogIn() {
     <div className='form-page-container'>
       <form className='formUp' onSubmit={handleSubmit(onSubmit)}>
         
-        <div className='white-guma-logo'>
+        {/*<div className='white-guma-logo'>
         <Image src="../../guma-white.png" alt="Descrição da imagem" />
-        </div>
+  </div>*/}
 
         <div>
         

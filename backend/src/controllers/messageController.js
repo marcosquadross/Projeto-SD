@@ -204,6 +204,9 @@ const messageController = {
         return;
       }
 
+      console.log(req.body);
+      return;
+
       const dests = group.members
         .filter((memberId) => memberId.toString() !== req.body.author)
         .map((memberId) => new ObjectId(memberId));

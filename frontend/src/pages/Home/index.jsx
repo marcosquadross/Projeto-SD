@@ -49,7 +49,7 @@ export default function Home() {
         (email) => email._id === receivedData._id
       );
 
-      if (!emailExiste) {
+      if (!emailExiste && receivedData.recipients.includes(user_data.username)) {
         setReceivedEmails(prevEmails => [...prevEmails, receivedData]);
       }
     });
