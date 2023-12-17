@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./style.css";
 import "../../main.css";
 
@@ -18,6 +18,10 @@ import handleEmailDate from "../../functions/handleEmailDate";
 
 import ShowEmail from "../../modals/showEmail";
 
+import { initWebSocket } from "../../websocket";
+
+import { handleSentWS } from "../../functions/handleEmailWS";
+
 export default function SentEmails() {
   const user_data = JSON.parse(localStorage.getItem("user_data"));
   const username = user_data.username;
@@ -26,11 +30,27 @@ export default function SentEmails() {
   const [sentEmails, setSentEmails] = useState([]);
   
   const toast = useToast();
-  
+
+  const wsRef = useRef(null);
+
   const handleShowEmail = (email) => {
     setSelectedEmail(email);
     onModalShowEmailOpen();
   };
+
+  useEffect(() => {
+    wsRef.current = initWebSocket((data) => {
+      const receivedData = JSON.parse(data);
+
+      if (handleSentWS(sentEmails, receivedData, user_data)) {
+        setSentEmails((prevEmails) => [...prevEmails, receivedData]);
+      }
+    });
+
+    return () => {
+      wsRef.current.close();
+    };
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {

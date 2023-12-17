@@ -21,6 +21,10 @@ import ShowEmail from "../../modals/showEmail";
 
 import { set } from "lodash";
 
+import { initWebSocket } from "../../websocket";
+
+import { handleEmailExiste } from "../../functions/handleEmailWS";
+
 export default function Home() {
   const user_data = JSON.parse(localStorage.getItem("user_data"));
   const username = user_data.username;
@@ -33,35 +37,49 @@ export default function Home() {
 
   const wsRef = useRef(null);
 
+  // useEffect(() => {
+  //   wsRef.current = new WebSocket("ws://localhost:8080");
+
+  //   wsRef.current.addEventListener("open", (event) => {
+  //     console.log("Conexão aberta com o servidor");
+  //   });
+
+  //   // Evento disparado quando uma mensagem é recebida do servidor
+  //   wsRef.current.addEventListener("message", (event) => {
+  //     console.log(`Recebido do servidor: ${event.data}`);
+  //     const receivedData = JSON.parse(event.data); // Assuming data is in JSON format
+
+  //     const emailExiste = receivedEmails.some(
+  //       (email) => email._id === receivedData._id
+  //     );
+
+  //     if (!emailExiste && receivedData.recipients.includes(user_data.username)) {
+  //       setReceivedEmails(prevEmails => [...prevEmails, receivedData]);
+  //     }
+  //   });
+
+  //   // Evento disparado quando a conexão é fechada
+  //   wsRef.current.addEventListener("close", (event) => {
+  //     console.log("Conexão fechada");
+  //   });
+
+  //   return () => {
+  //     wsRef.current.close();
+  //   }
+  // }, []);
+
   useEffect(() => {
-    wsRef.current = new WebSocket("ws://localhost:8080");
+    wsRef.current = initWebSocket((data) => {
+      const receivedData = JSON.parse(data);
 
-    wsRef.current.addEventListener("open", (event) => {
-      console.log("Conexão aberta com o servidor");
-    });
-
-    // Evento disparado quando uma mensagem é recebida do servidor
-    wsRef.current.addEventListener("message", (event) => {
-      console.log(`Recebido do servidor: ${event.data}`);
-      const receivedData = JSON.parse(event.data); // Assuming data is in JSON format
-
-      const emailExiste = receivedEmails.some(
-        (email) => email._id === receivedData._id
-      );
-
-      if (!emailExiste && receivedData.recipients.includes(user_data.username)) {
-        setReceivedEmails(prevEmails => [...prevEmails, receivedData]);
+      if (handleEmailExiste(receivedEmails, receivedData, user_data)) {
+        setReceivedEmails((prevEmails) => [...prevEmails, receivedData]);
       }
-    });
-
-    // Evento disparado quando a conexão é fechada
-    wsRef.current.addEventListener("close", (event) => {
-      console.log("Conexão fechada");
     });
 
     return () => {
       wsRef.current.close();
-    }
+    };
   }, []);
 
   useEffect(() => {
