@@ -2,6 +2,13 @@
 
 Este projeto tem como objetivo implementar um sistema de envio de mensagens entre múltiplos usuários.
 
+## Arquitetura
+
+
+<img src="./messageria.png" alt="Arquitetura" width="100%">
+<br>
+
+
 ## Cliente
 
 - cadastro na plataforma.
@@ -14,20 +21,21 @@ Este projeto tem como objetivo implementar um sistema de envio de mensagens entr
 ## Componentes e Funcionalidades:
 
 Usuário:
-    - Autentica-se no sistema através da interface de usuário.
-    - Submete uma solicitação para enviar um e-mail, fornecendo os destinatários, o conteúdo e outras informações necessárias.
-    - Criar grupos de pessoas para envio de mensagens.
+    
+- Autentica-se no sistema através da interface de usuário.
+- Submete uma solicitação para enviar um e-mail, fornecendo os destinatários, o conteúdo e outras informações necessárias.
+- Criar grupos de pessoas para envio de mensagens.
 
 Servidor:
-    - Valida as credenciais do usuário.
-    - Processa as solicitações do usuário.
+- Valida as credenciais do usuário.
+- Processa as solicitações do usuário.
 
 Banco de Dados:
-    - Armazena informações relevantes, como dados do usuário, configurações de e-mail e histórico de envio de e-mails.
-    - Escalável e tolerante a falhas.
+- Armazena informações relevantes, como dados do usuário, configurações de e-mail e histórico de envio de e-mails.
+- Escalável e tolerante a falhas.
 
 WebSocket:
-    - Fornece uma comunicação em tempo real para notificar o usuário sobre o status do envio de e-mail, confirmações ou eventuais erros.
+- Fornece uma comunicação em tempo real para notificar o usuário sobre o status do envio de e-mail, confirmações ou eventuais erros.
 
 
 ## Tecnologias Utilizadas:

@@ -37,37 +37,6 @@ export default function Home() {
 
   const wsRef = useRef(null);
 
-  // useEffect(() => {
-  //   wsRef.current = new WebSocket("ws://localhost:8080");
-
-  //   wsRef.current.addEventListener("open", (event) => {
-  //     console.log("Conexão aberta com o servidor");
-  //   });
-
-  //   // Evento disparado quando uma mensagem é recebida do servidor
-  //   wsRef.current.addEventListener("message", (event) => {
-  //     console.log(`Recebido do servidor: ${event.data}`);
-  //     const receivedData = JSON.parse(event.data); // Assuming data is in JSON format
-
-  //     const emailExiste = receivedEmails.some(
-  //       (email) => email._id === receivedData._id
-  //     );
-
-  //     if (!emailExiste && receivedData.recipients.includes(user_data.username)) {
-  //       setReceivedEmails(prevEmails => [...prevEmails, receivedData]);
-  //     }
-  //   });
-
-  //   // Evento disparado quando a conexão é fechada
-  //   wsRef.current.addEventListener("close", (event) => {
-  //     console.log("Conexão fechada");
-  //   });
-
-  //   return () => {
-  //     wsRef.current.close();
-  //   }
-  // }, []);
-
   useEffect(() => {
     wsRef.current = initWebSocket((data) => {
       const receivedData = JSON.parse(data);
@@ -96,6 +65,7 @@ export default function Home() {
 
 
   const handleReplyEmail = (email) => {
+    setSelectedEmail(email);
     setIsReply(true);
     onModalCreateEmailOpen();
   };
