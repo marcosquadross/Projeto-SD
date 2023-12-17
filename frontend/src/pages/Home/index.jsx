@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , useRef} from "react";
 import "./style.css";
 import "../../main.css";
 
@@ -31,35 +31,44 @@ export default function Home() {
   const [receivedEmails, setReceivedEmails] = useState([]);
   const [isReply, setIsReply] = useState(false);
 
-  const ws = new WebSocket("ws://localhost:8080");
+  const wsRef = useRef(null);
 
-  ws.addEventListener("open", (event) => {
-    console.log("Conexão aberta com o servidor");
-  });
+  useEffect(() => {
+    wsRef.current = new WebSocket("ws://localhost:8080");
 
-  // Evento disparado quando uma mensagem é recebida do servidor
-  ws.addEventListener("message", (event) => {
-    console.log(`Recebido do servidor: ${event.data}`);
-  });
+    wsRef.current.addEventListener("open", (event) => {
+      console.log("Conexão aberta com o servidor");
+    });
 
-  // Função para enviar uma mensagem ao servidor
-  function enviarMensagem() {
-    ws.send("Estou no Home");
-  }
+    // Evento disparado quando uma mensagem é recebida do servidor
+    wsRef.current.addEventListener("message", (event) => {
+      console.log(`Recebido do servidor: ${event.data}`);
+      const receivedData = JSON.parse(event.data); // Assuming data is in JSON format
 
-  // Evento disparado quando a conexão é fechada
-  ws.addEventListener("close", (event) => {
-    console.log("Conexão fechada");
-  });
+      const emailExiste = receivedEmails.some(
+        (email) => email._id === receivedData._id
+      );
+
+      if (!emailExiste) {
+        setReceivedEmails(prevEmails => [...prevEmails, receivedData]);
+      }
+    });
+
+    // Evento disparado quando a conexão é fechada
+    wsRef.current.addEventListener("close", (event) => {
+      console.log("Conexão fechada");
+    });
+
+    return () => {
+      wsRef.current.close();
+    }
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await GetReceivedEmails(user_data.user_id, toast);
         setReceivedEmails(res);
-        console.log("Emails recebidos:");
-        console.log(receivedEmails);
-        enviarMensagem();
       } catch (error) {
         console.error("Erro ao obter os emails:", error);
       }

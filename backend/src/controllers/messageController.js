@@ -4,10 +4,7 @@ import { Group } from "../models/Group.js";
 import { ObjectId } from "mongodb";
 
 import WebSocket, { WebSocketServer } from 'ws';
-// import { wss } from "../../index.js";
-// import ws from "../../../frontend/src/ws.js";
 
-// import { WebSocketServer } from "ws";
 const wss = new WebSocketServer({ port: 8080 });
 
 wss.on("connection", (ws) => {
@@ -83,7 +80,21 @@ const messageController = {
       };
 
       const response = await MessageModel.create(message);
-      sendEmail(response);
+
+      const ws_message = {
+        _id: response._id,
+        _v: response._v,
+        author: await getUserNameById(req.body.author),
+        content: req.body.content,
+        createdAt: response.createdAt,
+        files: req.body.files,
+        recipients: req.body.recipients,
+        time: req.body.time,
+        title: req.body.title,
+        updatedAt: response.updatedAt,
+        };
+
+      sendEmail(ws_message);
       return;
       res.status(201).json({ response, msg: "Mensagem criada com sucesso!" });
     } catch (error) {
