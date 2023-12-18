@@ -9,15 +9,6 @@ Este projeto tem como objetivo implementar um sistema de envio de mensagens entr
 <br>
 
 
-## Cliente
-
-- cadastro na plataforma.
-- enviar e receber mensagens.
-- editar seu cadastro.
-- criar grupos de pessoas para envio de mensagens.
-- 2-way authentication
-- receber notificações de novas mensagens.
-
 ## Componentes e Funcionalidades:
 
 Usuário:
@@ -35,8 +26,7 @@ Banco de Dados:
 - Escalável e tolerante a falhas.
 
 WebSocket:
-- Fornece uma comunicação em tempo real para notificar o usuário sobre o status do envio de e-mail, confirmações ou eventuais erros.
-
+- Fornece uma comunicação em tempo real para atualização dos e-mails enviados e recebidos.
 
 ## Tecnologias Utilizadas:
 
@@ -46,15 +36,13 @@ WebSocket:
 - MongoDB
 - WebSocket
 
-
 ## Fluxo de Envio de E-mails:
 
 1. O usuário se autentica no sistema.
 2. O usuário submete uma solicitação para enviar um e-mail.
 3. O servidor recebe a solicitação de envio de e-mail do usuário.
-4. O servidor utiliza o sistema de e-mail interno para compor e enviar o e-mail para os destinatários.
-5. Durante o processo de envio, o servidor atualiza o status no banco de dados.
-6. O WebSocket atualiza em tempo real os emails enviados.
+4. O servidor trato a solicitação a partir das informações do usuário.
+5. WebSocket atualiza a interface do usuário com as informações do e-mail enviado.
 
 ## Alunos
 

@@ -5,7 +5,11 @@ import { ObjectId } from "mongodb";
 
 import WebSocket, { WebSocketServer } from 'ws';
 
-const wss = new WebSocketServer({ port: 8080 });
+import Redis from 'ioredis';
+
+const client = new Redis();  
+
+const wss = new WebSocketServer({ port: 8081 });
 
 wss.on("connection", (ws) => {
   console.log("Cliente " + ws + " conectado");
@@ -95,7 +99,6 @@ const messageController = {
         };
 
       sendEmail(ws_message);
-      return;
       res.status(201).json({ response, msg: "Mensagem criada com sucesso!" });
     } catch (error) {
       console.log(`ERRO: ${error}`);
@@ -122,29 +125,69 @@ const messageController = {
 
   getByAuthor: async (req, res) => {
     try {
-      const author_id = new ObjectId(req.params.id);
 
-      const messages = await MessageModel.find({ author: author_id });
+      client.get(`env-${req.params.id}`, async (err, result) => {
+        if (err) {
+          console.log(err);
+          res.status(500).json({ msg: "Ocorreu um erro ao buscar as mensagens" });
+          return;
+        }
+        if (result) {
+          console.log("Redis");
+          res.json(JSON.parse(result));
+          return;
+        } else {
+          console.log("Mongo");
+          const author_id = new ObjectId(req.params.id);
 
-      const updatedMessages = [];
-      let new_message = {};
+          const messages = await MessageModel.find({ author: author_id });
 
-      if (!messages) {
-        res.status(404).json({ msg: "Nenhuma mensagem encontrada" });
-        return;
-      }
+          const updatedMessages = [];
+          let new_message = {};
 
-      for (const message of messages) {
-        const id = new ObjectId(message.author);
-        new_message = message.toObject();
-        new_message.author = await getUserNameById(id);
-        new_message.recipients = await getRecipientsNamesByIds(
-          message.recipients
-        );
-        updatedMessages.push(new_message);
-      }
+          if (!messages) {
+            res.status(404).json({ msg: "Nenhuma mensagem encontrada" });
+            return;
+          }
 
-      res.json(updatedMessages);
+          for (const message of messages) {
+            const id = new ObjectId(message.author);
+            new_message = message.toObject();
+            new_message.author = await getUserNameById(id);
+            new_message.recipients = await getRecipientsNamesByIds(
+              message.recipients
+            );
+            updatedMessages.push(new_message);
+          }
+
+          client.set(`env-${req.params.id}`, JSON.stringify(updatedMessages));
+          res.json(updatedMessages);
+        }
+      });
+
+      // const author_id = new ObjectId(req.params.id);
+
+      // const messages = await MessageModel.find({ author: author_id });
+
+      // const updatedMessages = [];
+      // let new_message = {};
+
+      // if (!messages) {
+      //   res.status(404).json({ msg: "Nenhuma mensagem encontrada" });
+      //   return;
+      // }
+
+      // for (const message of messages) {
+      //   const id = new ObjectId(message.author);
+      //   new_message = message.toObject();
+      //   new_message.author = await getUserNameById(id);
+      //   new_message.recipients = await getRecipientsNamesByIds(
+      //     message.recipients
+      //   );
+      //   updatedMessages.push(new_message);
+      // }
+
+      // res.json(updatedMessages);
     } catch (error) {
       console.log(`ERRO: ${error}`);
       res.status(500).json({ msg: "Ocorreu um erro ao buscar as mensagens" });
@@ -153,27 +196,44 @@ const messageController = {
 
   getByRecipient: async (req, res) => {
     try {
-      const messages = await MessageModel.find({ recipients: req.params.id });
 
-      const updatedMessages = [];
-      let new_message = {};
+      client.get(`receb-${req.params.id}`, async (err, result) => {
+        if (err) {
+          console.log(err);
+          res.status(500).json({ msg: "Ocorreu um erro ao buscar as mensagens" });
+          return;
+        }
+        if (result) {
+          console.log("Redis");
+          res.json(JSON.parse(result));
+          return;
+        } else {
+          console.log("Mongo");
 
-      if (!messages || messages.length === 0) {
-        res.status(404).json({ msg: "Nenhuma mensagem encontrada" });
-        return;
-      }
+          const messages = await MessageModel.find({ recipients: req.params.id });
 
-      for (const message of messages) {
-        const id = new ObjectId(message.author);
-        new_message = message.toObject();
-        new_message.author = await getUserNameById(id);
-        new_message.recipients = await getRecipientsNamesByIds(
-          message.recipients
-        );
-        updatedMessages.push(new_message);
-      }
+          const updatedMessages = [];
+          let new_message = {};
 
-      res.json(updatedMessages);
+          if (!messages || messages.length === 0) {
+            res.status(404).json({ msg: "Nenhuma mensagem encontrada" });
+            return;
+          }
+
+          for (const message of messages) {
+            const id = new ObjectId(message.author);
+            new_message = message.toObject();
+            new_message.author = await getUserNameById(id);
+            new_message.recipients = await getRecipientsNamesByIds(
+              message.recipients
+            );
+            updatedMessages.push(new_message);
+          }
+
+          client.set(`receb-${req.params.id}`, JSON.stringify(updatedMessages));
+          res.json(updatedMessages);
+        }
+      });
     } catch (error) {
       console.log(`ERRO: ${error}`);
       res.status(500).json({ msg: "Ocorreu um erro ao buscar as mensagens" });

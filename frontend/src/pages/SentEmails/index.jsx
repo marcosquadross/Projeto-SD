@@ -38,6 +38,13 @@ export default function SentEmails() {
     onModalShowEmailOpen();
   };
 
+  const sortByTime = (a, b) => {
+    const timeA = new Date(a.time).getTime();
+    const timeB = new Date(b.time).getTime();
+    return timeB - timeA;
+  };
+
+
   useEffect(() => {
     wsRef.current = initWebSocket((data) => {
       const receivedData = JSON.parse(data);
@@ -81,7 +88,8 @@ export default function SentEmails() {
       </div>
 
       <div className="gasto">
-        {sentEmails?.map((email) => (
+        {sentEmails.sort(sortByTime)
+        .map((email) => (
           <div
             className="gasto_information"
           >

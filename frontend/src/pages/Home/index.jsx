@@ -51,6 +51,12 @@ export default function Home() {
     };
   }, []);
 
+  const sortByTime = (a, b) => {
+    const timeA = new Date(a.time).getTime();
+    const timeB = new Date(b.time).getTime();
+    return timeB - timeA;
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -100,7 +106,8 @@ export default function Home() {
       </div>
 
       <div className="gasto">
-        {receivedEmails.map((email) => (
+        {receivedEmails.sort(sortByTime)
+          .map((email) => (
           <div
             className="gasto_information"
           >
