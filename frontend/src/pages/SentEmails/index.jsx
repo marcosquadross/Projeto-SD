@@ -13,7 +13,7 @@ import {
 
 import { GoReply } from "react-icons/go";
 
-
+import CreateEmail from "../../modals/createEmail";
 import ShowEmail from "../../modals/showEmail";
 
 import { initWebSocket } from "../../websocket";
@@ -28,6 +28,8 @@ export default function SentEmails() {
   
   const [selectedEmail, setSelectedEmail] = useState(null);
   const [sentEmails, setSentEmails] = useState([]);
+  const [isReply, setIsReply] = useState(false);
+  const [isSend, setIsSend] = useState(false);
   
   const toast = useToast();
 
@@ -77,6 +79,19 @@ export default function SentEmails() {
     onClose: onModalShowEmailClose,
   } = useDisclosure();
 
+  const {
+    isOpen: isModalCreateEmailOpen,
+    onOpen: onModalCreateEmailOpen,
+    onClose: onModalCreateEmailClose,
+  } = useDisclosure();
+
+  const handleReplyEmail = (email) => {
+    console.log("email", email);
+    setSelectedEmail(email);
+    setIsSend(true);
+    setIsReply(true);
+    onModalCreateEmailOpen();
+  };
 
   return (
     <>
@@ -113,13 +128,23 @@ export default function SentEmails() {
                 w={6}
                 h={6}
                 color="gray.500"
+                onClick={() => handleReplyEmail(email)}
                 style={{ cursor: "pointer" }}
               />
             </div>
           </div>
         ))}
       </div>
-
+      <div>
+        <CreateEmail
+          isOpen={isModalCreateEmailOpen}
+          onClose={onModalCreateEmailClose}
+          user={username}
+          isSend={isSend}
+          isReply={isReply}
+          email={selectedEmail}
+        ></CreateEmail>
+      </div>
       <div>
         {selectedEmail && (
           <ShowEmail
@@ -130,5 +155,6 @@ export default function SentEmails() {
         )}
       </div>
     </>
+    
   );
 }

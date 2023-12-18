@@ -151,6 +151,7 @@ export default function Home() {
           isOpen={isModalCreateEmailOpen}
           onClose={onModalCreateEmailClose}
           user={username}
+          isSend={false}
           isReply={isReply}
           email={selectedEmail}
         ></CreateEmail>

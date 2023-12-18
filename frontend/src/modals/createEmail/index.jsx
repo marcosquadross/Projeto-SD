@@ -18,7 +18,7 @@ import {
 
 import { SendEmail } from "../../services";
 
-export default function CreateEmail({ isOpen, onClose, initialRef, finalRef, isReply, email}) {
+export default function CreateEmail({ isOpen, onClose, initialRef, finalRef, isSend, isReply, email }) {
   const toast = useToast();
 
   const [assunto, setAssunto] = useState("");
@@ -42,6 +42,14 @@ export default function CreateEmail({ isOpen, onClose, initialRef, finalRef, isR
     return replyEmailGroup
   }
 
+  function handleReplyInSentPage(email){
+    if(isReply && isSend){
+      return email.recipients
+    }
+
+    return handleGroupRecipients(email.recipients)
+  }
+
   const handleSendEmail = async () => {
     let data;
     files != null ? data = packFiles(files) : data = "";
@@ -50,26 +58,42 @@ export default function CreateEmail({ isOpen, onClose, initialRef, finalRef, isR
 
     let email_data = {};
 
-    isReply != true ? email_data = {
-      title: assunto,
-      author: user_data.user_id,
-      content,
-      time: new Date(),
-      recipients: dest,
-      files: files != null ? files : []
-    } : email_data = {
-      title: "Re: " + email.title,
-      author: user_data.user_id,
-      content,
-      time: new Date(),
-      recipients: replyEmailGroup.split(",").map((item) => item.trim()),
-      files: files != null ? files : []
-    };
+    if (isReply != true) {
+      email_data = {
+        title: assunto,
+        author: user_data.user_id,
+        content,
+        time: new Date(),
+        recipients: dest,
+        files: files != null ? files : []
+      }
+
+    } else if (isReply == true && isSend == false) {
+      email_data = {
+        title: "Re: " + email.title,
+        author: user_data.user_id,
+        content,
+        time: new Date(),
+        recipients: replyEmailGroup.split(",").map((item) => item.trim()),
+        files: files != null ? files : []
+      };
+    } else if (isReply == true && isSend == true) {
+      email_data = {
+        title: "Re: " + email.title,
+        author: user_data.user_id,
+        content,
+        time: new Date(),
+        recipients: email.recipients,
+        files: files != null ? files : []
+      }
+    } 
+
+    console.log(email_data)
 
     await SendEmail(email_data, toast);
     onClose();
 
-    }
+  }
 
   useEffect(() => {
     console.log(files);
@@ -109,10 +133,9 @@ export default function CreateEmail({ isOpen, onClose, initialRef, finalRef, isR
               <Input
                 type="text"
                 placeholder="Destinatários"
-                onChange={isReply != true ? (e) => setDestinatarios(e.target.value) : (e) => setDestinatarios(email.author)}
-                // onChange={(e) => setDestinatarios(e.target.value)}
+                onChange={(e) => setDestinatarios(e.target.value)}
                 isReadOnly={isReply}
-                value={isReply != true ? destinatarios : handleGroupRecipients(email.recipients)}
+                value={isReply != true ? destinatarios : handleReplyInSentPage(email)}
               />
             </FormControl>
 
@@ -121,7 +144,7 @@ export default function CreateEmail({ isOpen, onClose, initialRef, finalRef, isR
               <Input
                 type="text"
                 placeholder="Assunto"
-                onChange = {isReply != true ? (e) => setAssunto(e.target.value) : (e) => setAssunto("Re: " + email.title)}
+                onChange={isReply != true ? (e) => setAssunto(e.target.value) : (e) => setAssunto("Re: " + email.title)}
                 // onChange={(e) => setAssunto(e.target.value)}
                 isReadOnly={isReply}
                 value={isReply != true ? assunto : "Re: " + email.title}
