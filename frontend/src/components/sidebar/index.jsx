@@ -7,7 +7,6 @@ import { BiLogOut } from "react-icons/bi";
 import { MdGroups, MdOutgoingMail, MdMarkEmailUnread } from "react-icons/md";
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import { RiArrowDropDownLine, RiArrowDropUpLine } from "react-icons/ri";
-import { IoMdNotifications } from "react-icons/io";
 import { FaPencil } from "react-icons/fa6";
 
 import { Avatar } from "@chakra-ui/react";
@@ -82,10 +81,6 @@ export default function Sidebar(props) {
     onModalShowProfileOpen();
   };
 
-  const handleGoToNotifications = () => {
-    navigate("/notifications");
-  };
-
   const handleGoToReceivedEmails = () => {
     navigate("/home");
   };
@@ -116,7 +111,6 @@ export default function Sidebar(props) {
   return (
     <div className="sidebar">
       <div className="container-logo-username" onClick={handleProfile}>
-        {/* <img src="../../../guma.png" className="guma-logo" alt="GUMA Logo" /> */}
         <Avatar
           name={user_data.name}
           src="https://bit.ly/broken-link"
@@ -143,13 +137,6 @@ export default function Sidebar(props) {
 
       <div className="flex" onClick={handleCreateEmailClick}>
         <Icon as={FaPencil} w={5} h={5} /> Escrever
-      </div>
-
-      <div
-        className={currentPath === "/notifications" ? "isPage flex" : "flex"}
-        onClick={handleGoToNotifications}
-      >
-        <Icon as={IoMdNotifications} w={6} h={6} /> Notificações
       </div>
 
       <div className="subtitle-sidebar grupos">GRUPOS</div>

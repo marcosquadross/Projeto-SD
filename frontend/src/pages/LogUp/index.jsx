@@ -27,19 +27,6 @@ export default function LogUp() {
           return name[0].toLocaleUpperCase().concat(name.substring(1))
         }),
 
-      // last_name: z.string()
-      //   .nonempty('Este campo é obrigatório')
-      //   .regex(/^[^0-9]*$/, 'O nome não pode conter números')
-      //   .transform(last_name => {
-      //     return last_name[0].toLocaleUpperCase().concat(last_name.substring(1))
-      //   }),
-
-
-      // email: z.string()
-      //   .nonempty('Este campo é obrigatório')
-      //   .email('Formato de email inválido')
-      //   .toLowerCase(),
-
       password: z.string()
         .nonempty('Este campo é obrigatório')
         .min(6, 'Mínimo de 6 caracteres'),
@@ -99,25 +86,6 @@ export default function LogUp() {
 
         </div>
 
-        {/* <div>
-
-          <label style={{ color: '#D5DDDF' }} htmlFor="last_name">Sobrenome</label>
-          <br></br>
-
-          <Input
-            type="text"
-            style={{ color: '#D5DDDF' }}
-            id='last_name'
-            name='last_name'
-            {...register('last_name')}
-            htmlSize={27}
-            width='auto'
-          />
-
-          {errors.last_name && <span className='error'>{errors.last_name.message} </span>}
-
-        </div> */}
-
         <div>
 
           <label style={{ color: '#D5DDDF' }} htmlFor="username">Username</label>
@@ -136,27 +104,6 @@ export default function LogUp() {
           {errors.username && <span className='error'>{errors.username.message} </span>}
 
         </div>
-      
-      {/*
-        <div>
-
-          <label style={{ color: '#D5DDDF' }} htmlFor="email">E-mail</label>
-          <br></br>
-
-          <Input
-            type="email"
-            style={{ color: '#D5DDDF' }}
-            id='email'
-            name='email'
-            {...register('email')}
-            htmlSize={27}
-            width='auto'
-          />
-
-          {errors.email && <span className='error'>{errors.email.message}</span>}
-
-        </div>
-      */}
 
         <div>
 

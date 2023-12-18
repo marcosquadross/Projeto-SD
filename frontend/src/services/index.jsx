@@ -155,7 +155,6 @@ export function GetReceivedEmails(user_id, toast) {
 }
 
 export function DeleteEmail(email_id, toast) {
-  // console.log("AQUI");
   axios.delete(address + "/message/" + email_id).then((response) => {
     if (response.status == 200) {
       toast({

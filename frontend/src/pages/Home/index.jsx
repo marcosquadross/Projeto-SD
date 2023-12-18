@@ -99,9 +99,6 @@ export default function Home() {
       <div className="body">
         <header className="home">
           <h1 className="page-title">Recebidos</h1>
-          {/* <div className="search-bar">
-            <SearchBar />
-          </div> */}
         </header>
       </div>
 
@@ -112,9 +109,9 @@ export default function Home() {
             className="gasto_information"
           >
             <p>{email.title}</p>
-            <p>{email.author}</p>
+            <p>De: {email.author}</p>
             <p>{handleEmailDate(email.time)}</p>
-            <p>{email.recipients}</p>
+            <p>Para: {email.recipients}</p>
             <div>
               <Icon
                 as={IoMailOutline}

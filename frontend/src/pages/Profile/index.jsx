@@ -3,7 +3,6 @@ import "./style.css";
 import "../../main.css";
 
 import Sidebar from "../../components/sidebar";
-// import FollowTopics from "../../modals/followTopics";
 import CreateEmail from "../../modals/createEmail";
 import { Icon, Button, useDisclosure } from "@chakra-ui/react";
 import {

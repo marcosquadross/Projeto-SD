@@ -40,7 +40,6 @@ header.home {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    /* gap: 10px; */
     position: relative;
 }
 
@@ -135,10 +134,6 @@ header.home {
     justify-content:flex-start;
     transition: background-color 0.3s ease;
 }
-
-/* .flex:hover {
-    background-color: #ddd;
-} */
 
 .sidebar {
     width: 15%;

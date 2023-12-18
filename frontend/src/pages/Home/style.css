@@ -119,17 +119,19 @@ span.error-message {
     display: grid;
     grid-template-columns: repeat(5, 1fr); /* Defina o número de colunas desejado */
     gap: 5px;
-    background-color: #8c939439; /* var(--10-gray) rgb(151, 226, 148) #0F1616 */
+    background-color: #8c939439; 
     padding: 10px;
     border-radius: 8px;
     margin-bottom: 10px;
     margin-left: 190px;
     margin-right: 40px;
+    /* var(--10-gray) rgb(151, 226, 148) #0F1616 */
   }
 
   .gasto_information p {
     margin: 0;
     font-family: 'Inter', 'Manrope', sans-serif;
+    color: black;
   }
   
  

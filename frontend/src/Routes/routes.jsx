@@ -3,7 +3,6 @@ import LogUp from "../pages/LogUp";
 import LogIn from "../pages/LogIn";
 import Home from "../pages/Home";
 import SentEmails from "../pages/SentEmails";
-import Notifications from "../pages/Notifications";
 import { Navigate, createBrowserRouter } from "react-router-dom";
 
 function PrivateRoute({ children }) {
@@ -41,11 +40,6 @@ const Routering = createBrowserRouter([
   {
     path: "/sent-emails",
     element: <SentEmails/>,
-  },
-
-  {
-    path: "/notifications",
-    element: <Notifications/>,
   },
 ]);
 

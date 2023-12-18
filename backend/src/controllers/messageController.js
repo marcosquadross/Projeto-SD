@@ -7,9 +7,7 @@ import WebSocket, { WebSocketServer } from "ws";
 
 import Redis from "ioredis";
 
-const client = new Redis(
-  
-);
+const client = new Redis("rediss://default:3332fcc6c2ff4749a63cf63f49450fb4@profound-insect-49487.upstash.io:49487");
 
 const wss = new WebSocketServer({ port: 8081 });
 
