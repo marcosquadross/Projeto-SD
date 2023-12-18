@@ -33,7 +33,7 @@ export default function SendEmailToGroup({ isOpen, onClose, initialRef, finalRef
 
     let email_data = {};
 
-    email_data = {
+    isReply != true? email_data = {
       id: group.id,
       title: assunto,
       author: user_data.user_id,
@@ -41,7 +41,17 @@ export default function SendEmailToGroup({ isOpen, onClose, initialRef, finalRef
       time: new Date(),
       recipients: group.members,
       files: files != null ? files : []
-    }
+    } : email_data = {
+      id: group.id,
+      title: "Re: " + email.title,
+      author: user_data.user_id,
+      content,
+      time: new Date(),
+      recipients: [email.author],
+      files: files != null ? files : []
+    };
+
+    console.log(email_data)
 
     await sendEmailToGroup(email_data, toast);
     onClose();
@@ -109,17 +119,6 @@ export default function SendEmailToGroup({ isOpen, onClose, initialRef, finalRef
                 placeholder="Mensagem"
                 size="lg"
                 onChange={(e) => setContent(e.target.value)}
-              />
-            </FormControl>
-
-            <FormControl id="files" mb={4}>
-              <FormLabel>Arquivos</FormLabel>
-              <Input
-                placeholder="Arquivos"
-                size="lg"
-                onChange={(e) => handleFileChange(e)}
-                type="file"
-                multiple
               />
             </FormControl>
           </ModalBody>

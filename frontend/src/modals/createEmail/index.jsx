@@ -28,8 +28,21 @@ export default function CreateEmail({ isOpen, onClose, initialRef, finalRef, isR
 
   const user_data = JSON.parse(localStorage.getItem("user_data"));
 
+  let replyEmailGroup = ""
+
+  function handleGroupRecipients(recipients) {
+    recipients.forEach(member => {
+      if (member != user_data.username) {
+        replyEmailGroup = replyEmailGroup + member + ", "
+      }
+    })
+
+    replyEmailGroup = replyEmailGroup + email.author
+
+    return replyEmailGroup
+  }
+
   const handleSendEmail = async () => {
-    // const data = packFiles(files);
     let data;
     files != null ? data = packFiles(files) : data = "";
 
@@ -49,7 +62,7 @@ export default function CreateEmail({ isOpen, onClose, initialRef, finalRef, isR
       author: user_data.user_id,
       content,
       time: new Date(),
-      recipients: [email.author],
+      recipients: replyEmailGroup.split(",").map((item) => item.trim()),
       files: files != null ? files : []
     };
 
@@ -99,7 +112,7 @@ export default function CreateEmail({ isOpen, onClose, initialRef, finalRef, isR
                 onChange={isReply != true ? (e) => setDestinatarios(e.target.value) : (e) => setDestinatarios(email.author)}
                 // onChange={(e) => setDestinatarios(e.target.value)}
                 isReadOnly={isReply}
-                value={isReply != true ? destinatarios : email.author}
+                value={isReply != true ? destinatarios : handleGroupRecipients(email.recipients)}
               />
             </FormControl>
 
@@ -121,17 +134,6 @@ export default function CreateEmail({ isOpen, onClose, initialRef, finalRef, isR
                 placeholder="Mensagem"
                 size="lg"
                 onChange={(e) => setContent(e.target.value)}
-              />
-            </FormControl>
-
-            <FormControl id="files" mb={4}>
-              <FormLabel>Arquivos</FormLabel>
-              <Input
-                placeholder="Arquivos"
-                size="lg"
-                onChange={(e) => handleFileChange(e)}
-                type="file"
-                multiple
               />
             </FormControl>
           </ModalBody>

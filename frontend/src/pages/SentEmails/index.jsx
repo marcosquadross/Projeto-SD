@@ -2,25 +2,25 @@ import React, { useState, useEffect, useRef } from "react";
 import "./style.css";
 import "../../main.css";
 
-import { GetSentEmails, DeleteEmail } from "../../services";
+import { GetSentEmails } from "../../services";
 
 import Sidebar from "../../components/sidebar";
 import { Icon, Button, useDisclosure, useToast } from "@chakra-ui/react";
 import {
   IoMailOutline,
   IoMailOpenOutline,
-  IoTrashOutline,
 } from "react-icons/io5";
 
 import { GoReply } from "react-icons/go";
 
-import handleEmailDate from "../../functions/handleEmailDate";
 
 import ShowEmail from "../../modals/showEmail";
 
 import { initWebSocket } from "../../websocket";
 
+import handleEmailDate from "../../functions/handleEmailDate";
 import { handleSentWS } from "../../functions/handleEmailWS";
+import { handleRecipients } from "../../functions/handleRecipients";
 
 export default function SentEmails() {
   const user_data = JSON.parse(localStorage.getItem("user_data"));
@@ -96,7 +96,7 @@ export default function SentEmails() {
             <p>{email.title}</p>
             <p>{email.author}</p>
             <p>{handleEmailDate(email.time)}</p>
-            <p>{email.recipients}</p>
+            <p>{handleRecipients(email.recipients)}</p>
             <div>
               <Icon
                 as={IoMailOutline}
@@ -108,15 +108,6 @@ export default function SentEmails() {
                 onClick={() => handleShowEmail(email)}
                 style={{ cursor: "pointer" }}
               />
-              <Icon 
-                as={IoTrashOutline} 
-                w={6} 
-                h={6} 
-                mr={10} 
-                color="gray.500"
-                onClick = {() => DeleteEmail(email._id, toast)} 
-                style={{ cursor: "pointer" }}
-                />
               <Icon
                 as={GoReply}
                 w={6}

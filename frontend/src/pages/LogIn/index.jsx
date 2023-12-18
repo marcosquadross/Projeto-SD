@@ -63,11 +63,9 @@ export default function LogIn() {
         
         <div className='white-guma-logo'>
         <Image src="../../logo.png" alt="Descrição da imagem" />
-  </div>
+        </div>
 
         <div>
-        
-
           <label style={{ color: '#D5DDDF' }} htmlFor="username">Username</label>
           <br></br>
 

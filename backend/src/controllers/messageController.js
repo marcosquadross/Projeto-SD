@@ -306,11 +306,10 @@ const messageController = {
       };
 
       sendEmail(ws_message);
+      updateCache(ws_message, req.body.author, dests);
 
       res.status(201).json({ response, msg: "Mensagem criada com sucesso!" });
     } catch (error) {
-      console.log(`ERRO: ${error}`);
-      console.log(error);
       res.status(500).json({ msg: "Ocorreu um erro ao criar mensagem." });
     }
   },

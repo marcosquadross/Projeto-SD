@@ -7,14 +7,11 @@ import { Icon, useDisclosure, useToast } from "@chakra-ui/react";
 import {
   IoMailOutline,
   IoMailOpenOutline,
-  IoTrashOutline,
 } from "react-icons/io5";
 
 import { GoReply } from "react-icons/go";
 
-import { GetReceivedEmails, DeleteEmail } from "../../services";
-
-import handleEmailDate from "../../functions/handleEmailDate";
+import { GetReceivedEmails } from "../../services";
 
 import CreateEmail from "../../modals/createEmail";
 import ShowEmail from "../../modals/showEmail";
@@ -24,6 +21,8 @@ import { set } from "lodash";
 import { initWebSocket } from "../../websocket";
 
 import { handleEmailExiste } from "../../functions/handleEmailWS";
+import { handleRecipients } from "../../functions/handleRecipients";
+import handleEmailDate from "../../functions/handleEmailDate";
 
 export default function Home() {
   const user_data = JSON.parse(localStorage.getItem("user_data"));
@@ -111,7 +110,7 @@ export default function Home() {
             <p>{email.title}</p>
             <p>De: {email.author}</p>
             <p>{handleEmailDate(email.time)}</p>
-            <p>Para: {email.recipients}</p>
+            <p>Para: {handleRecipients(email.recipients)}</p>
             <div>
               <Icon
                 as={IoMailOutline}
@@ -121,15 +120,6 @@ export default function Home() {
                 ml={7}
                 color="gray.500"
                 onClick={() => handleShowEmail(email)}
-                style={{ cursor: "pointer" }}
-              />
-              <Icon
-                as={IoTrashOutline}
-                w={6}
-                h={6}
-                mr={10}
-                color="gray.500"
-                onClick={() => DeleteEmail(email._id, toast)}
                 style={{ cursor: "pointer" }}
               />
 
