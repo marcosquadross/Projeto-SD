@@ -40,12 +40,10 @@ function updateCache(message, author, recipients) {
 }
 
 wss.on("connection", (ws) => {
-  console.log("Cliente " + ws + " conectado");
-
+  
   // Evento para lidar com mensagens recebidas do cliente
   ws.on("message", (message) => {
-    console.log(`Recebido do cliente: ${message}`);
-
+   
     // Enviar a mensagem de volta para o cliente
     ws.send(`Recebido: ${message}`);
   });
@@ -57,7 +55,6 @@ wss.on("connection", (ws) => {
 });
 
 function sendEmail(message) {
-  console.log("Enviando email para WS...");
   wss.clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN) {
       client.send(JSON.stringify(message));
