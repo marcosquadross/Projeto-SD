@@ -114,7 +114,7 @@ Redis:
         ```
 
 #### Visualizar Grupos:
-**URL:** `/api/groups/user/user_id`
+- **URL:** `/api/groups/user/user_id`
     - **Método:** `GET`
 
 ## Interface de Usuário:
