@@ -7,7 +7,6 @@ export const initWebSocket = (callback) => {
   });
 
   ws.addEventListener("message", (event) => {
-    console.log(`Recebido do servidor: ${event.data}`);
     callback(event.data);
   });
 
